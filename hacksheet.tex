@@ -1,0 +1,172 @@
+% This work is licensed under the following license:
+%
+%   Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported
+%
+% Please see the file COPYING for more information.
+\documentclass[10pt,landscape]{article}
+
+\usepackage{alltt}
+\usepackage{cprotect}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage[landscape,margin=13mm,footskip=1pt,includefoot]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage{upquote}
+\usepackage{xspace}
+
+\graphicspath{{figs/}}
+\pagestyle{empty}
+\parindent=0pt
+\hypersetup{
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=cyan,         % color of links to bibliography
+    filecolor=magenta,      % color of file links
+    urlcolor=blue           % color of external links
+}
+\setitemize{itemsep=1pt,topsep=0pt,parsep=1pt,leftmargin=10pt}
+\titleformat{\subsection}{\sc}{}{}{}
+\titlespacing{\subsection}{0pt}{*0}{*1}
+
+\newcommand{\todo}[1]{\textit{\textcolor{red}{TODO: #1}}}
+\newcommand{\minisec}[1]{\textsc{#1}\\}
+\newcommand{\first}{\emph{(i)}~}
+\newcommand{\second}{\emph{(ii)}~}
+\newcommand{\third}{\emph{(iii)}~}
+\newcommand{\fourth}{\emph{(iv)}~}
+\newcommand{\fifth}{\emph{(v)}~}
+
+\newcommand{\os}[1]{\texttt{\footnotesize{#1}}}
+\newcommand{\freebsd}{\os{F}}
+\newcommand{\bsd}{\os{B}}
+\newcommand{\unix}{\os{U}}
+\newcommand{\linux}{\os{L}}
+\newcommand{\windows}{\os{W}}
+\newcommand{\macos}{\os{M}}
+
+\newcommand{\topic}[1]{\minisec{#1}}
+\newenvironment{action}[1]
+  {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
+  {\end{itemize}\end{minipage}\vspace*{3pt}}
+\newcommand{\cmd}[2]{\item[#1] \small\texttt{\# #2}}
+
+\begin{document}
+
+\begin{multicols*}{3}
+
+{\Huge\scshape
+HackSheet\hspace{-2pt}\raisebox{15pt}{\tiny{master}}\hspace{-4pt}
+}
+
+%\hfill\includegraphics[width=.4\linewidth]{bro-logo-small}
+%\vspace{-38pt}
+
+{\scriptsize
+\setstretch{1.5}
+\begin{tabular}{l l}
+%Version: & \today\\
+Author: & \href{http://matthias.vallentin.net}{Matthias Vallentin}\\
+Web: & \url{https://github.com/mavam/hacksheet}\\
+License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
+                {Attribution-NonCommercial-ShareAlike 3.0 Unported}
+\end{tabular}
+}
+
+%\hfill
+%\href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
+%{\includegraphics[width=.2\linewidth]{by-nc-sa}}
+%\vspace{-10pt}
+
+\vspace{-10pt}
+
+\section*{Terminology}
+
+Each command contains a list of flags that indicate the OS requirement: Linux
+(\linux), BSD (\bsd), FreeBSD (\freebsd), Mac OS (\macos), and Windows
+(\windows).
+
+\section*{Reconnaissance}
+
+\subsection*{Scanning}
+
+\begin{action}{Ping sweep of subnet and host range}
+\cmd{\unix}{nmap -sP 10.0.0.0/24 192.168.0.128-254}
+\end{action}
+
+\begin{action}{Scan specific TCP and UDP ports}
+\cmd{\unix}{nmap -pT:21-25,80,U:5000-6000 target}
+\end{action}
+
+\begin{action}{TCP SYN scan without connecting}
+\cmd{\unix}{nmap -P0 -sS target}
+\end{action}
+
+\begin{action}{Detect OS}
+\cmd{\unix}{nmap -O target}
+\cmd{\unix}{p0f -s trace.pcap}
+\end{action}
+
+\begin{action}{Grab application banners}
+\cmd{\unix}{nmap -sV target}
+\end{action}
+
+\subsection*{Wireless}
+
+\section*{Vulnerability Scanning}
+
+\subsection*{Web}
+\begin{action}{Look for web server vulnerabilities}
+\cmd{\unix}{nikto -host 10.0.0.1}
+\end{action}
+
+\section*{Hardening}
+
+\subsection*{ACLs}
+
+\begin{action}{Secure mount points}
+\cmd{\unix}{mount -o nodev,noexec,nosuid /dev/hda3 /tmp}
+\end{action}
+
+\begin{action}{List file attributes}
+\cmd{\linux}{lsattr /var/log/foo}
+\cmd{\bsd}{ls -ol /var/log/foo}
+\end{action}
+
+\begin{action}{Make files append-only}
+\cmd{\linux}{chattr +a /var/log/foo}
+\end{action}
+
+\section*{Forensics}
+
+\subsection*{Processes}
+
+% Cronjob entry: all one line.
+% 0 4 * * * find / \( -perm -4000 -o -perm -2000 \) -type f \
+%  > /var/log/sidlog.new && \
+%  diff /var/log/sidlog.new /var/log/sidlog && \
+%  mv /var/log/sidlog.new /var/log/sidlog
+% 
+\begin{action}{Find SETUID and SETGID files and types}
+  \cmd{\unix}{find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
+    -exec file \textbackslash\{\textbackslash\} \textbackslash;}
+\end{action}
+
+\begin{action}{Find world/group writeable directories}
+  \cmd{\unix}{find / \textbackslash( -perm -g+w -o -perm -o+w \textbackslash)
+    -type d -exec ls -ald \textbackslash\{\textbackslash\} \textbackslash;}
+\end{action}
+
+\begin{action}{Display listening TCP/UDP ports}
+\cmd{\linux\windows\unix}{nestat -tun}
+\cmd{\bsd}{nestat -p tcp -an | egrep 'Proto|LISTEN|udp'}
+\cmd{\freebsd}{sockstat -4 -l}
+\end{action}
+
+\end{multicols*}
+
+\end{document}
