@@ -49,11 +49,13 @@
 \newcommand{\windows}{\os{W}}
 \newcommand{\macos}{\os{M}}
 
-\newcommand{\topic}[1]{\minisec{#1}}
 \newenvironment{action}[1]
   {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
   {\end{itemize}\end{minipage}\vspace*{3pt}}
-\newcommand{\cmd}[2]{\item[#1] \small\texttt{\# #2}}
+\newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
+\newcommand{\tool}[2]{\item[#1] {\footnotesize\sc{#2}}\xspace}
+\newcommand{\button}[1]{\footnotesize\sf#1}
+\newcommand{\click}{$\rightarrow$\xspace}
 
 \begin{document}
 
@@ -145,12 +147,19 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 
 \subsection*{Processes}
 
+\begin{action}{Inspect startup items}
+  \cmd{\linux}{initctl show-config} (Ubuntu)
+  \cmd{\freebsd}{less /etc/rc.local} (deprecated)
+  \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
+  \tool{\windows}{Autoruns} \button{Everything}
+\end{action}
+
 % Cronjob entry: all one line.
 % 0 4 * * * find / \( -perm -4000 -o -perm -2000 \) -type f \
 %  > /var/log/sidlog.new && \
 %  diff /var/log/sidlog.new /var/log/sidlog && \
 %  mv /var/log/sidlog.new /var/log/sidlog
-% 
+%
 \begin{action}{Find SETUID and SETGID files and types}
   \cmd{\unix}{find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
     -exec file \textbackslash\{\textbackslash\} \textbackslash;}
@@ -161,10 +170,21 @@ Each command contains a list of flags that indicate the OS requirement: Linux
     -type d -exec ls -ald \textbackslash\{\textbackslash\} \textbackslash;}
 \end{action}
 
+\begin{action}{Find all unsigned processes}
+  \tool{\windows}{ProcessExplorer}
+  \button{Options} \click \button{Verify Image Signatures}
+\end{action}
+
 \begin{action}{Display listening TCP/UDP ports}
 \cmd{\linux\windows\unix}{nestat -tun}
 \cmd{\bsd}{nestat -p tcp -an | egrep 'Proto|LISTEN|udp'}
 \cmd{\freebsd}{sockstat -4 -l}
+\end{action}
+
+\subsection*{Cleanup}
+
+\begin{action}{Kill all processes accessing a mount point}
+  \cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
 
 \end{multicols*}
