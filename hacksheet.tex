@@ -148,7 +148,9 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \subsection*{Processes}
 
 \begin{action}{Inspect startup items}
-  \cmd{\linux}{initctl show-config} (Ubuntu)
+  \cmd{\linux}{initctl show-config}
+    (\href{http://upstart.ubuntu.com/cookbook/upstart_cookbook.pdf}{upstart},
+    Ubuntu)
   \cmd{\freebsd}{less /etc/rc.local} (deprecated)
   \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
   \tool{\windows}{Autoruns} \button{Everything}
