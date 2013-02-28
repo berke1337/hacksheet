@@ -211,6 +211,10 @@ Each command contains a list of flags that indicate the OS requirement: Linux
   \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
 \end{action}
 
+\begin{action}{Check \texttt{sudo} users}
+  \cmd{\unix}{visudo}
+\end{action}
+
 \subsection*{Processes}
 
 \begin{action}{Inspect startup items}
