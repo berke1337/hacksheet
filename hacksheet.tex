@@ -53,6 +53,7 @@
   {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
   {\end{itemize}\end{minipage}\vspace*{3pt}}
 \newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
+\newcommand{\bulletpoint}[1]{\item {\small #1}}
 \newcommand{\tool}[2]{\item[#1] {\footnotesize\sc{#2}}\xspace}
 \newcommand{\button}[1]{\footnotesize\sf#1}
 \newcommand{\click}{$\rightarrow$\xspace}
@@ -129,7 +130,30 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 
 \section*{Hardening}
 
-\subsection*{ACLs}
+\subsection*{Physical}
+
+\begin{action}{Check devices}
+\bulletpoint{Hardware keylogger (e.g., USB dongles)}
+\bulletpoint{Rogue WiFi cards}
+\end{action}
+
+\subsection*{Software}
+
+\begin{action}{Run package updates}
+  \cmd{\linux}{yum upgrade \emph{package}}
+  \cmd{\linux}{apt-get upgrade \emph{package}}
+  \cmd{\windows}{TODO}
+\end{action}
+
+\subsection*{Access Control}
+
+\begin{action}{Look for root users}
+\cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
+\end{action}
+
+\begin{action}{Look for users with null passwords}
+\cmd{\unix}{awk -F: '\$2 == "" \{print \$1\}' /etc/shadow}
+\end{action}
 
 \begin{action}{Secure mount points}
 \cmd{\unix}{mount -o nodev,noexec,nosuid /dev/hda3 /tmp}
@@ -144,7 +168,22 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \cmd{\linux}{chattr +a /var/log/foo}
 \end{action}
 
+\begin{action}{Show account security settings}
+\cmd{\unix}{passwd -l \emph{user}}
+\cmd{\linux}{chage -l \emph{user}}
+\cmd{\windows}{net accounts}
+\cmd{\windows}{net accounts /domain}
+\end{action}
+
 \section*{Forensics}
+
+\subsection*{Users}
+
+\begin{action}{Inspect logged in and past users}
+  \cmd{\unix}{w}
+  \cmd{\unix}{last | head}
+  \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
+\end{action}
 
 \subsection*{Processes}
 
@@ -179,8 +218,9 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \end{action}
 
 \begin{action}{Display listening TCP/UDP ports}
-\cmd{\linux\windows\unix}{nestat -tun}
-\cmd{\bsd}{nestat -p tcp -an | egrep 'Proto|LISTEN|udp'}
+\cmd{\linux\windows\unix}{netstat -tun}
+\cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
+\cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
 \cmd{\freebsd}{sockstat -4 -l}
 \end{action}
 
@@ -189,6 +229,12 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \begin{action}{Kill all processes accessing a mount point}
   \cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
+
+\section*{References}
+\begin{itemize}
+  \small
+  \item \url{http://blog.commandlinekungfu.com/p/index-of-tips-and-tricks.html}
+\end{itemize}
 
 \end{multicols*}
 
