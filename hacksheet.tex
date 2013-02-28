@@ -30,7 +30,7 @@
     urlcolor=blue           % color of external links
 }
 \setitemize{itemsep=1pt,topsep=0pt,parsep=1pt,leftmargin=10pt}
-\titleformat{\subsection}{\sc}{}{}{}
+%\titleformat{\subsection}{\sc}{}{}{}
 \titlespacing{\subsection}{0pt}{*0}{*1}
 
 \newcommand{\todo}[1]{\textit{\textcolor{red}{TODO: #1}}}
@@ -53,6 +53,7 @@
   {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
   {\end{itemize}\end{minipage}\vspace*{3pt}}
 \newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
+\newcommand{\comment}[1]{\textrm{\small(#1)}}
 \newcommand{\bulletpoint}[1]{\item {\small #1}}
 \newcommand{\tool}[2]{\item[#1] {\footnotesize\sc{#2}}\xspace}
 \newcommand{\button}[1]{\footnotesize\sf#1}
@@ -175,6 +176,31 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \cmd{\windows}{net accounts /domain}
 \end{action}
 
+\subsection*{Network}
+
+\begin{action}{Disable IPv6}
+  \cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
+  \cmd{\linux}{vi /etc/sysctl.conf\\
+    net.ipv6.conf.all.disable\_ipv6 = 1\\
+    net.ipv6.conf.<interface0>.disable\_ipv6 = 1\\
+    net.ipv6.conf.<interfaceN>.disable\_ipv6 = 1\\
+    vi /etc/hosts \comment{comment IPv6 hosts}}
+  \cmd{\linux}{vi /etc/sysconfig/network\\
+    NETWORKING\_IPV6=no\\
+    IPV6INIT=no\\
+    service network restart}
+  \cmd{\linux}{vi /etc/modprobe.conf\\
+    install ipv6 /bin/true \comment{append to file}}
+  \cmd{\linux}{vi /etc/modprobe.conf  \comment{RHEL/CentOS}\\
+    alias net-pf-10 off}
+  \cmd{\linux}{vi /etc/modprobe.conf \comment{Debian/Ubuntu}\\
+    alias net-pf-10 off \\
+    alias ipv6 off}
+    \cmd{\windows}{reg add
+    hklm{\textbackslash}system{\textbackslash}currentcontrolset{\textbackslash}services{\textbackslash}
+    tcpip6{\textbackslash}parameters /v DisabledComponents /t REG\_DWORD /d 255}
+\end{action}
+
 \section*{Forensics}
 
 \subsection*{Users}
@@ -233,7 +259,7 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \section*{References}
 \begin{itemize}
   \small
-  \item \url{http://blog.commandlinekungfu.com/p/index-of-tips-and-tricks.html}
+  \item \url{http://bit.ly/cmd-line-kung-fu}
 \end{itemize}
 
 \end{multicols*}
