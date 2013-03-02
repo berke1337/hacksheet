@@ -138,26 +138,85 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \bulletpoint{Rogue WiFi cards}
 \end{action}
 
-\subsection*{Software}
+\subsection*{OS \& Software}
+
+\begin{action}{Check for package repositories}
+  \cmd{\linux}{vi /etc/apt/sources.list} \comment{Ubuntu}
+  \cmd{\linux}{vi /etc/yum.repos.d/*} \comment{RHEL/Fedora}
+\end{action}
 
 \begin{action}{Run package updates}
   \cmd{\linux}{yum upgrade \emph{package}}
   \cmd{\linux}{apt-get upgrade \emph{package}}
-  \cmd{\windows}{TODO}
 \end{action}
 
-\subsection*{Access Control}
+\begin{action}{Update Kernel}
+  \cmd{\linux}{yum update kernel} \comment{RHEL/Fedora}
+  \cmd{\linux}{apt-cache search linux-image; apt-get install
+  linux-image-\emph{x.x.x-xx}} \comment{Debian}
+\end{action}
 
-\begin{action}{Look for root users}
+\begin{action}{Harden SSHD}
+  \tool{\unix}{fail2ban}
+  \cmd{\unix}{vi /etc/ssh/sshd\_config\\
+    Protocol 2\\
+    AllowUsers root admin webmaster\\
+    AllowGroup sshusers\\
+    PasswordAuthentication no\\
+    HostbasedAuthentication no\\
+    RSAAuthentication yes\\
+    PubkeyAuthentication yes\\
+    PermitEmptyPasswords no\\
+    PermitRootLogin no\\
+    ServerKeyBits 2048\\
+    IgnoreRhosts yes\\
+    RhostsAuthentication no\\
+    RhostsRSAAuthentication no}
+\end{action}
+
+\subsection*{User Management}
+
+\begin{action}{Show account security settings}
+\cmd{\unix}{passwd -l \emph{user}}
+\cmd{\linux}{chage -l \emph{user}}
+\cmd{\windows}{net accounts}
+\cmd{\windows}{net accounts /domain}
+\end{action}
+
+\begin{action}{Look for users with root privileges}
 \cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
 \end{action}
 
-\begin{action}{Look for users with null passwords}
+\begin{action}{Look for users with empty passwords}
 \cmd{\unix}{awk -F: '\$2 == "" \{print \$1\}' /etc/shadow}
 \end{action}
 
+\begin{action}{Verify group memberships}
+  \cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
+\end{action}
+
+\begin{action}{Check \texttt{sudo} users}
+  \cmd{\unix}{visudo}
+\end{action}
+
+\begin{action}{Check crontab users}
+  \cmd{\unix}{for u in \$(cut -f1 -d: /etc/passwd); do crontab -u \$u -l; done}
+\end{action}
+
+\begin{action}{Check remote authentication}
+  \cmd{\unix}{vi \textasciitilde/.rhosts}
+  \cmd{\unix}{vi \textasciitilde/.ssh/*}
+\end{action}
+
+\begin{action}{Change passwords}
+\cmd{\unix}{pwgen -sy} \comment{generate strong passwords}
+\cmd{\unix}{passwd \emph{user}}
+\end{action}
+
+\subsection*{File System}
+
 \begin{action}{Secure mount points}
-\cmd{\unix}{mount -o nodev,noexec,nosuid /dev/hda3 /tmp}
+\cmd{\unix}{mount -o nodev,noexec,nosuid /dev.. /tmp}
 \end{action}
 
 \begin{action}{List file attributes}
@@ -169,14 +228,16 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \cmd{\linux}{chattr +a /var/log/foo}
 \end{action}
 
-\begin{action}{Show account security settings}
-\cmd{\unix}{passwd -l \emph{user}}
-\cmd{\linux}{chage -l \emph{user}}
-\cmd{\windows}{net accounts}
-\cmd{\windows}{net accounts /domain}
+\subsection*{Network}
+
+\begin{action}{Show firewall rules}
+\cmd{\linux}{iptables -nL}
+\cmd{\linux}{iptables -t nat -nL}
 \end{action}
 
-\subsection*{Network}
+\begin{action}{Check DNS resolver}
+\cmd{\unix}{vi /etc/resolv.conf}
+\end{action}
 
 \begin{action}{Disable IPv6}
   \cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
@@ -201,6 +262,11 @@ Each command contains a list of flags that indicate the OS requirement: Linux
     tcpip6{\textbackslash}parameters /v DisabledComponents /t REG\_DWORD /d 255}
 \end{action}
 
+\begin{action}{Check network configuration}
+  \cmd{\linux}{vi /etc/network/interfaces} \comment{Ubuntu}
+  \cmd{\linux}{vi /etc/sysconfig/network-scripts/ifcfg-eth*} \comment{RHEL}
+\end{action}
+
 \section*{Forensics}
 
 \subsection*{Users}
@@ -209,10 +275,6 @@ Each command contains a list of flags that indicate the OS requirement: Linux
   \cmd{\unix}{w}
   \cmd{\unix}{last | head}
   \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
-\end{action}
-
-\begin{action}{Check \texttt{sudo} users}
-  \cmd{\unix}{visudo}
 \end{action}
 
 \subsection*{Processes}
@@ -252,6 +314,10 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
 \cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
 \cmd{\freebsd}{sockstat -4 -l}
+\end{action}
+
+\begin{action}{Check active connections to find backdoors}
+\cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
 \end{action}
 
 \subsection*{Cleanup}
