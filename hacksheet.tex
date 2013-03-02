@@ -141,37 +141,37 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \subsection*{OS \& Software}
 
 \begin{action}{Check for package repositories}
-  \cmd{\linux}{vi /etc/apt/sources.list} \comment{Ubuntu}
-  \cmd{\linux}{vi /etc/yum.repos.d/*} \comment{RHEL/Fedora}
+\cmd{\linux}{vi /etc/apt/sources.list} \comment{Ubuntu}
+\cmd{\linux}{vi /etc/yum.repos.d/*} \comment{RHEL/Fedora}
 \end{action}
 
 \begin{action}{Run package updates}
-  \cmd{\linux}{yum upgrade \emph{package}}
-  \cmd{\linux}{apt-get upgrade \emph{package}}
+\cmd{\linux}{yum upgrade \emph{package}}
+\cmd{\linux}{apt-get upgrade \emph{package}}
 \end{action}
 
 \begin{action}{Update Kernel}
-  \cmd{\linux}{yum update kernel} \comment{RHEL/Fedora}
-  \cmd{\linux}{apt-cache search linux-image; apt-get install
+\cmd{\linux}{yum update kernel} \comment{RHEL/Fedora}
+\cmd{\linux}{apt-cache search linux-image; apt-get install
   linux-image-\emph{x.x.x-xx}} \comment{Debian}
 \end{action}
 
 \begin{action}{Harden SSHD}
-  \tool{\unix}{fail2ban}
-  \cmd{\unix}{vi /etc/ssh/sshd\_config\\
-    Protocol 2\\
-    AllowUsers root admin webmaster\\
-    AllowGroup sshusers\\
-    PasswordAuthentication no\\
-    HostbasedAuthentication no\\
-    RSAAuthentication yes\\
-    PubkeyAuthentication yes\\
-    PermitEmptyPasswords no\\
-    PermitRootLogin no\\
-    ServerKeyBits 2048\\
-    IgnoreRhosts yes\\
-    RhostsAuthentication no\\
-    RhostsRSAAuthentication no}
+\tool{\unix}{fail2ban}
+\cmd{\unix}{vi /etc/ssh/sshd\_config\\
+  Protocol 2\\
+  AllowUsers root admin webmaster\\
+  AllowGroup sshusers\\
+  PasswordAuthentication no\\
+  HostbasedAuthentication no\\
+  RSAAuthentication yes\\
+  PubkeyAuthentication yes\\
+  PermitEmptyPasswords no\\
+  PermitRootLogin no\\
+  ServerKeyBits 2048\\
+  IgnoreRhosts yes\\
+  RhostsAuthentication no\\
+  RhostsRSAAuthentication no}
 \end{action}
 
 \subsection*{User Management}
@@ -192,20 +192,20 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \end{action}
 
 \begin{action}{Verify group memberships}
-  \cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
+\cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
 \end{action}
 
 \begin{action}{Check \texttt{sudo} users}
-  \cmd{\unix}{visudo}
+\cmd{\unix}{visudo}
 \end{action}
 
 \begin{action}{Check crontab users}
-  \cmd{\unix}{for u in \$(cut -f1 -d: /etc/passwd); do crontab -u \$u -l; done}
+\cmd{\unix}{for u in \$(cut -f1 -d: /etc/passwd); do crontab -u \$u -l; done}
 \end{action}
 
 \begin{action}{Check remote authentication}
-  \cmd{\unix}{vi \textasciitilde/.rhosts}
-  \cmd{\unix}{vi \textasciitilde/.ssh/*}
+\cmd{\unix}{vi \textasciitilde/.rhosts}
+\cmd{\unix}{vi \textasciitilde/.ssh/*}
 \end{action}
 
 \begin{action}{Change passwords}
@@ -240,26 +240,26 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \end{action}
 
 \begin{action}{Disable IPv6}
-  \cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
-  \cmd{\linux}{vi /etc/sysctl.conf\\
-    net.ipv6.conf.all.disable\_ipv6 = 1\\
-    net.ipv6.conf.<interface0>.disable\_ipv6 = 1\\
-    net.ipv6.conf.<interfaceN>.disable\_ipv6 = 1\\
-    vi /etc/hosts \comment{comment IPv6 hosts}}
-  \cmd{\linux}{vi /etc/sysconfig/network\\
-    NETWORKING\_IPV6=no\\
-    IPV6INIT=no\\
-    service network restart}
-  \cmd{\linux}{vi /etc/modprobe.conf\\
-    install ipv6 /bin/true \comment{append to file}}
-  \cmd{\linux}{vi /etc/modprobe.conf  \comment{RHEL/CentOS}\\
-    alias net-pf-10 off}
-  \cmd{\linux}{vi /etc/modprobe.conf \comment{Debian/Ubuntu}\\
-    alias net-pf-10 off \\
-    alias ipv6 off}
-    \cmd{\windows}{reg add
-    hklm{\textbackslash}system{\textbackslash}currentcontrolset{\textbackslash}services{\textbackslash}
-    tcpip6{\textbackslash}parameters /v DisabledComponents /t REG\_DWORD /d 255}
+\cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
+\cmd{\linux}{vi /etc/sysctl.conf\\
+  net.ipv6.conf.all.disable\_ipv6 = 1\\
+  net.ipv6.conf.<interface0>.disable\_ipv6 = 1\\
+  net.ipv6.conf.<interfaceN>.disable\_ipv6 = 1\\
+  vi /etc/hosts \comment{comment IPv6 hosts}}
+\cmd{\linux}{vi /etc/sysconfig/network\\
+  NETWORKING\_IPV6=no\\
+  IPV6INIT=no\\
+  service network restart}
+\cmd{\linux}{vi /etc/modprobe.conf\\
+  install ipv6 /bin/true \comment{append to file}}
+\cmd{\linux}{vi /etc/modprobe.conf  \comment{RHEL/CentOS}\\
+  alias net-pf-10 off}
+\cmd{\linux}{vi /etc/modprobe.conf \comment{Debian/Ubuntu}\\
+  alias net-pf-10 off \\
+  alias ipv6 off}
+  \cmd{\windows}{reg add
+  hklm{\textbackslash}system{\textbackslash}currentcontrolset{\textbackslash}services{\textbackslash}
+  tcpip6{\textbackslash}parameters /v DisabledComponents /t REG\_DWORD /d 255}
 \end{action}
 
 \begin{action}{Check network configuration}
@@ -272,40 +272,40 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \subsection*{Users}
 
 \begin{action}{Inspect logged in and past users}
-  \cmd{\unix}{w}
-  \cmd{\unix}{last | head}
-  \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
+\cmd{\unix}{w}
+\cmd{\unix}{last | head}
+\cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
 \end{action}
 
 \subsection*{Processes}
 
 \begin{action}{Inspect startup items}
-  \cmd{\linux}{initctl show-config}
-    (\href{http://upstart.ubuntu.com/cookbook/upstart_cookbook.pdf}{upstart},
-    Ubuntu)
-  \cmd{\freebsd}{less /etc/rc.local} (deprecated)
-  \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
-  \tool{\windows}{Autoruns} \button{Everything}
+\cmd{\linux}{initctl show-config}
+  (\href{http://upstart.ubuntu.com/cookbook/upstart_cookbook.pdf}{upstart},
+  Ubuntu)
+\cmd{\freebsd}{less /etc/rc.local} (deprecated)
+\cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
+\tool{\windows}{Autoruns} \button{Everything}
 \end{action}
 
 \begin{action}{Find SETUID and SETGID files and types}
-  \cmd{\unix}{find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
-    -exec file \textbackslash\{\textbackslash\} \textbackslash;}
-  \cmd{\unix}{crontab -e\\
-    0 4 * * * find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
-    -type f > /var/log/sidlog.new \&\&
-    diff /var/log/sidlog.new /var/log/sidlog \&\&
-    mv /var/log/sidlog.new /var/log/sidlog}
+\cmd{\unix}{find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
+  -exec file \textbackslash\{\textbackslash\} \textbackslash;}
+\cmd{\unix}{crontab -e\\
+  0 4 * * * find / \textbackslash( -perm -4000 -o -perm -2000 \textbackslash)
+  -type f > /var/log/sidlog.new \&\&
+  diff /var/log/sidlog.new /var/log/sidlog \&\&
+  mv /var/log/sidlog.new /var/log/sidlog}
 \end{action}
 
 \begin{action}{Find world/group writeable directories}
-  \cmd{\unix}{find / \textbackslash( -perm -g+w -o -perm -o+w \textbackslash)
-    -type d -exec ls -ald \textbackslash\{\textbackslash\} \textbackslash;}
+\cmd{\unix}{find / \textbackslash( -perm -g+w -o -perm -o+w \textbackslash)
+  -type d -exec ls -ald \textbackslash\{\textbackslash\} \textbackslash;}
 \end{action}
 
 \begin{action}{Find all unsigned processes}
-  \tool{\windows}{ProcessExplorer}
-  \button{Options} \click \button{Verify Image Signatures}
+\tool{\windows}{ProcessExplorer}
+\button{Options} \click \button{Verify Image Signatures}
 \end{action}
 
 \begin{action}{Display listening TCP/UDP ports}
@@ -322,13 +322,13 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 \subsection*{Cleanup}
 
 \begin{action}{Kill all processes accessing a mount point}
-  \cmd{\unix}{fuser -k -c /mnt/secret}
+\cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
 
 \section*{References}
 \begin{itemize}
-  \small
-  \item \url{http://bit.ly/cmd-line-kung-fu}
+\small
+\item \url{http://bit.ly/cmd-line-kung-fu}
 \end{itemize}
 
 \end{multicols*}
