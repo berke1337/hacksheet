@@ -236,8 +236,10 @@ Windows (\windows).
 \subsection*{Network}
 
 \begin{action}{Show firewall rules}
-\cmd{\linux}{iptables -nL}
-\cmd{\linux}{iptables -t nat -nL}
+\cmd{\linux}{for t in nat mangle filter raw; do iptables -t \$t -nL; done}
+\cmd{\windows}{netsh firewall show portopening}
+\cmd{\windows}{netsh firewall show allowedprogram}
+\cmd{\windows}{netsh firewall show config}
 \end{action}
 
 \begin{action}{Check DNS resolver}
