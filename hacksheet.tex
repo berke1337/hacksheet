@@ -190,6 +190,7 @@ Windows (\windows).
 
 \begin{action}{Look for users with root privileges}
 \cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
+\cmd{\windows}{net localgroup administratos}
 \end{action}
 
 \begin{action}{Look for users with empty passwords}
@@ -216,6 +217,7 @@ Windows (\windows).
 \begin{action}{Change passwords}
 \cmd{\unix}{pwgen -sy} \comment{generate strong passwords}
 \cmd{\unix}{passwd \emph{user}}
+\cmd{\windows}{net user \emph{user} *}
 \end{action}
 
 \subsection*{File System}
@@ -227,6 +229,14 @@ Windows (\windows).
 \begin{action}{List file attributes}
 \cmd{\linux}{lsattr /var/log/foo}
 \cmd{\bsd}{ls -ol /var/log/foo}
+\end{action}
+
+\begin{action}{System File Checker }
+\cmd{\windows}{sfc /scannow}
+\end{action}
+
+\begin{action}{File Signature Verification}
+\cmd{\windows}{sigverif}
 \end{action}
 
 \begin{action}{Make files append-only}
@@ -276,14 +286,6 @@ Windows (\windows).
 
 \section*{Forensics}
 
-\subsection*{Users}
-
-\begin{action}{Inspect logged in and past users}
-\cmd{\unix}{w}
-\cmd{\unix}{last | head}
-\cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
-\end{action}
-
 \subsection*{Processes}
 
 \begin{action}{Inspect startup items}
@@ -326,10 +328,35 @@ Windows (\windows).
 \cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
 \end{action}
 
+\begin{action}{Currently Running Tasks/Processes}
+\cmd{\windows}{tasklist -svc} 
+\cmd{\linux\unix}{ps aux | less}
+\cmd{\linux\unix}{top}
+\cmd{\linux\unix}{ps -u \emph{user}}
+\end{action}
+
+\begin{action}{Kill Tasks/Processes}
+\cmd{\windows}{taskkill -pid \emph{pid}}
+\cmd{\linux\unix}{kill \emph{pid}}
+\end{action}
+
+\subsection*{Users}
+
+\begin{action}{Inspect logged in and past users}
+\cmd{\unix}{w}
+\cmd{\unix}{last | head}
+\cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
+\end{action}
+
 \subsection*{Cleanup}
 
 \begin{action}{Kill all processes accessing a mount point}
 \cmd{\unix}{fuser -k -c /mnt/secret}
+\end{action}
+
+\subsection*{Drivers}
+\begin{action}{Driver query}
+\cmd{/windows}{driverquery (-v)}
 \end{action}
 
 \section*{References}
