@@ -229,13 +229,19 @@ Windows (\windows).
 \begin{action}{List file attributes}
 \cmd{\linux}{lsattr /var/log/foo}
 \cmd{\bsd}{ls -ol /var/log/foo}
+\cmd{\windows}{cacls.exe file.txt}
 \end{action}
 
-\begin{action}{System File Checker }
+\begin{action}{File creation date}
+\cmd{\windows}{dir /tc /od}
+\cmd{\unix}{ls -li /etc | sort -n}
+\end{action}
+
+\begin{action}{System file checker }
 \cmd{\windows}{sfc /scannow}
 \end{action}
 
-\begin{action}{File Signature Verification}
+\begin{action}{File signature serification}
 \cmd{\windows}{sigverif}
 \end{action}
 
@@ -346,6 +352,7 @@ Windows (\windows).
 \cmd{\unix}{w}
 \cmd{\unix}{last | head}
 \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
+\tool{\windows}{PsLoggedOn}
 \end{action}
 
 \subsection*{Cleanup}
@@ -363,8 +370,16 @@ Windows (\windows).
 \begin{itemize}
 \small
 \item \url{http://bit.ly/cmd-line-kung-fu}
+\item \url{http://www.robvanderwoude.com/ntadmincommands.php}
+\item \url
+{http://pubs.vmware.com/vsphere-50/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-50-security-guide.pdf}
 \end{itemize}
 
+\section*{Very Useful Downloads}
+\begin{itemize}
+\small
+\item \url{http://technet.microsoft.com/en-us/sysinternals/bb842062}
+\end{itemize}
 \end{multicols*}
 
 \end{document}
