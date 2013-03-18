@@ -120,6 +120,10 @@ Powershell \\
 \cmd{\unix}{nmap -sP 10.0.0.0/24 192.168.0.128-254}
 \end{action}
 
+\begin{action}{List all computers in network}
+\cmd{\windows}{net view}
+\end{action}
+
 \begin{action}{Scan specific TCP and UDP ports}
 \cmd{\unix}{nmap -pT:21-25,80,U:5000-6000 target}
 \end{action}
@@ -213,6 +217,12 @@ Powershell \\
 
 \begin{action}{Look for users with empty passwords}
 \cmd{\unix}{awk -F: '\$2 == "" \{print \$1\}' /etc/shadow}
+\end{action}
+
+\begin{action}{Make Passwords Expire}
+\cmd{\windows}{wmic path Win32\_UserAccount Set PasswordExpires=True}
+\cmd{\windows}{wmic path Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
+\cmd{\windows}{wmic path /Node:\emph{remotecomputer} Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
 \end{action}
 
 \begin{action}{Verify group memberships}
@@ -403,6 +413,8 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
 \tool{\windows}{PsLoggedOn}
 \tool{\windows}{Task Manager (open as administrator) -> Users Tab}
+\cmd{\windows}{wmic computersystem get username}
+\cmd{\windows}{wmic /node:\emph{remotecomputer} computersystem get username}
 \end{action}
 
 \subsection*{Cleanup}
@@ -428,7 +440,8 @@ dir=out remoteport=4099 action=block}
 \section*{Very Useful Downloads}
 \begin{itemize}
 \small
-\item \url{http://technet.microsoft.com/en-us/sysinternals/bb842062}
+\item {Sys Internals:} \url{http://technet.microsoft.com/en-us/sysinternals/bb842062}
+\item {Seconfig XP:} \url{http://seconfig.sytes.net/}
 \end{itemize}
 \end{multicols*}
 
