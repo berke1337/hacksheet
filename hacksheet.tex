@@ -18,6 +18,7 @@
 \usepackage{titlesec}
 \usepackage{upquote}
 \usepackage{xspace}
+\usepackage{wasysym}
 
 \graphicspath{{figs/}}
 \pagestyle{empty}
@@ -63,6 +64,7 @@
 \newcommand{\tool}[2]{\item[#1] {\footnotesize\sc{#2}}\xspace}
 \newcommand{\button}[1]{\footnotesize\sf#1}
 \newcommand{\click}{$\rightarrow$\xspace}
+\newcommand{\checkbox}{\CheckedBox}
 
 \begin{document}
 
@@ -99,6 +101,17 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 (\linux), BSD (\bsd), FreeBSD (\freebsd), Mac OS (\macos), UNIX (\unix), and
 Windows (\windows).
 
+\section*{General Utility}
+\subsection*{Useful Powershell Commands}
+\begin{action}{Download File from Internet }
+\cmd{\windows}{ 
+Powershell \\
+\$source = "http:www.download.com/file.txt" \\
+\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
+\$wc = New-Object System.Net.WebClient \\
+\$wc.DownloadFile($source, $destination) \\
+  }
+\end{action}
 \section*{Reconnaissance}
 
 \subsection*{Scanning}
@@ -188,6 +201,10 @@ Windows (\windows).
 \cmd{\windows}{net accounts /domain}
 \end{action}
 
+\begin{action}{View Users}
+\cmd{\windows}{wmic useraccount list brief}
+\end{action}
+
 \begin{action}{Look for users with root privileges}
 \cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
 \cmd{\windows}{net localgroup administratos}
@@ -243,6 +260,8 @@ Windows (\windows).
 
 \begin{action}{File signature serification}
 \cmd{\windows}{sigverif}
+\tool{\windows}{sigcheck}
+\cmd{\windows}{sigcheck -e -u -s c:\ }
 \end{action}
 
 \begin{action}{Make files append-only}
@@ -257,6 +276,24 @@ Windows (\windows).
 \cmd{\windows}{netsh firewall show allowedprogram}
 \cmd{\windows}{netsh firewall show config}
 \end{action}
+
+\begin{action}{Close ports}
+\cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" \\
+protocol=TCP\\
+dir=out remoteport=4099 action=block}
+\end{action}
+
+\begin{action} {Shut down SMB vulnerable services}
+\tool{\windows}{Seconfig XP}
+\checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
+\checkbox{Disable SMB over TCP/IP} 
+\checkbox{Disable RPC over TCP/IP}
+\click \button{Apply}
+\click \button{ Yes}
+\end{action}
+
+
+
 
 \begin{action}{Check DNS resolver}
 \cmd{\unix}{vi /etc/resolv.conf}
@@ -323,8 +360,14 @@ Windows (\windows).
 \button{Options} \click \button{Verify Image Signatures}
 \end{action}
 
+\begin{action} {View Process File Location}
+\tool{\windows}{ProcessExplorer}
+\button{View} \click \button{Select Columns...} \click \button{Image Path}
+\end{action}
+
 \begin{action}{Display listening TCP/UDP ports}
 \cmd{\linux\windows\unix}{netstat -tun}
+\tool{\windows}{tcpview}
 \cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
 \cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
 \cmd{\freebsd}{sockstat -4 -l}
@@ -353,6 +396,7 @@ Windows (\windows).
 \cmd{\unix}{last | head}
 \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
 \tool{\windows}{PsLoggedOn}
+\tool{\windows}{Task Manager (open as administrator) -> Users Tab}
 \end{action}
 
 \subsection*{Cleanup}
@@ -363,7 +407,7 @@ Windows (\windows).
 
 \subsection*{Drivers}
 \begin{action}{Driver query}
-\cmd{/windows}{driverquery (-v)}
+\cmd{windows}{driverquery (-v)}
 \end{action}
 
 \section*{References}
