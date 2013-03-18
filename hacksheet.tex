@@ -109,7 +109,7 @@ Powershell \\
 \$source = "http:www.download.com/file.txt" \\
 \$destination = "c:\textbackslash temp\textbackslash file.txt" \\
 \$wc = New-Object System.Net.WebClient \\
-\$wc.DownloadFile($source, $destination) \\
+\$wc.DownloadFile(\$source, \$destination) \\
   }
 \end{action}
 \section*{Reconnaissance}
@@ -154,6 +154,7 @@ Powershell \\
 \begin{action}{Check devices}
 \bulletpoint{Hardware keylogger (e.g., USB dongles)}
 \bulletpoint{Rogue WiFi cards}
+
 \end{action}
 
 \subsection*{OS \& Software}
@@ -261,7 +262,7 @@ Powershell \\
 \begin{action}{File signature serification}
 \cmd{\windows}{sigverif}
 \tool{\windows}{sigcheck}
-\cmd{\windows}{sigcheck -e -u -s c:\ }
+\cmd{\windows}{sigcheck -e -u -s c:{\textbackslash} }
 \end{action}
 
 \begin{action}{Make files append-only}
@@ -337,7 +338,12 @@ dir=out remoteport=4099 action=block}
   Ubuntu)
 \cmd{\freebsd}{less /etc/rc.local} (deprecated)
 \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
-\tool{\windows}{Autoruns} \button{Everything}
+\tool{\windows}{Autoruns} 
+\click\button{Options}
+\click\button{Filter Options}
+\checkbox{Verify code signatures}
+\checkbox{Hide Microsoft entries}
+
 \end{action}
 
 \begin{action}{Find SETUID and SETGID files and types}
