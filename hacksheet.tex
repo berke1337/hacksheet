@@ -425,7 +425,17 @@ dir=out remoteport=4099 action=block}
 
 \subsection*{Drivers}
 \begin{action}{Driver query}
-\cmd{windows}{driverquery (-v)}
+\cmd{\windows}{driverquery (-v)}
+\end{action}
+
+\subsection*{Databases}
+\begin{action}{Export/Restore a MySQL Database}
+\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+\end{action}
+\begin{action}{Export/Restore a PostgreSQL Database}
+\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
+\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
 \end{action}
 
 \section*{References}
