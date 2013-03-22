@@ -111,7 +111,16 @@ Powershell \\
 \$wc = New-Object System.Net.WebClient \\
 \$wc.DownloadFile(\$source, \$destination) \\
   }
-\end{action}
+  \end{action}
+  
+  \subsection*{Date and Time}
+  \begin{action}{Set date and time}
+  \cmd{\unix}{ date MMddhhmm[[cc]yy]}
+  \cmd{\windows}{date}
+  \cmd{\windows}{time}
+  \end{action}
+ 
+
 \section*{Reconnaissance}
 
 \subsection*{Scanning}
@@ -219,10 +228,18 @@ Powershell \\
 \cmd{\unix}{awk -F: '\$2 == "" \{print \$1\}' /etc/shadow}
 \end{action}
 
-\begin{action}{Make Passwords Expire}
+\begin{action}{Make passwords expire}
 \cmd{\windows}{wmic path Win32\_UserAccount Set PasswordExpires=True}
 \cmd{\windows}{wmic path Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
 \cmd{\windows}{wmic path /Node:\emph{remotecomputer} Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
+\cmd{\linux}{chage -d 0 \emph{username}}
+\end{action}
+
+\begin{action}{Set maximum number of login failures}
+\cmd{\linux}{faillog -M \emph{maxNumber} -u \emph{username}}
+\cmd{\linux}{failog -r -u \emph{username}}
+\cmd{\windows}{net accounts /lockoutthreshold:\emph{maxNumber}}
+\cmd{\windows}{net accounts /lockoutduration:\emph{numberOfMinutes}}
 \end{action}
 
 \begin{action}{Verify group memberships}
