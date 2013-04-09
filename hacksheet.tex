@@ -101,26 +101,6 @@ Each command contains a list of flags that indicate the OS requirement: Linux
 (\linux), BSD (\bsd), FreeBSD (\freebsd), Mac OS (\macos), UNIX (\unix), and
 Windows (\windows).
 
-\section*{General Utility}
-\subsection*{Useful Powershell Commands}
-\begin{action}{Download File from Internet }
-\cmd{\windows}{ 
-Powershell \\
-\$source = "http:www.download.com/file.txt" \\
-\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
-\$wc = New-Object System.Net.WebClient \\
-\$wc.DownloadFile(\$source, \$destination) \\
-  }
-  \end{action}
-  
-  \subsection*{Date and Time}
-  \begin{action}{Set date and time}
-  \cmd{\unix}{ date MMddhhmm[[cc]yy]}
-  \cmd{\windows}{date}
-  \cmd{\windows}{time}
-  \end{action}
- 
-
 \section*{Reconnaissance}
 
 \subsection*{Scanning}
@@ -172,7 +152,7 @@ Powershell \\
 
 \subsection*{OS \& Software}
 
-\begin{action}{Check for package repositories}
+\begin{action}{Check for suspicious package repositories}
 \cmd{\linux}{vi /etc/apt/sources.list} \comment{Ubuntu}
 \cmd{\linux}{vi /etc/yum.repos.d/*} \comment{RHEL/Fedora}
 \end{action}
@@ -440,12 +420,18 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
 
-\subsection*{Drivers}
-\begin{action}{Driver query}
-\cmd{\windows}{driverquery (-v)}
+\section*{System Administration}
+
+\subsection*{Date and Time}
+
+\begin{action}{Set date and time}
+\cmd{\unix}{date MMddhhmm[[cc]yy]}
+\cmd{\windows}{date}
+\cmd{\windows}{time}
 \end{action}
 
 \subsection*{Databases}
+
 \begin{action}{Export/Restore a MySQL Database}
 \cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
 \cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
@@ -455,21 +441,38 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
 \end{action}
 
+\subsection*{Miscellaneous Windows Tasks}
+
+\begin{action}{Download File from Internet}
+\cmd{\windows}{ 
+Powershell \\
+\$source = "http:www.download.com/file.txt" \\
+\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
+\$wc = New-Object System.Net.WebClient \\
+\$wc.DownloadFile(\$source, \$destination)}
+\end{action}
+  
+\begin{action}{driver query}
+\cmd{\windows}{driverquery (-v)}
+\end{action}
+
 \section*{References}
+
 \begin{itemize}
 \small
 \item \url{http://bit.ly/cmd-line-kung-fu}
-\item \url{http://www.robvanderwoude.com/ntadmincommands.php}
-\item \url
-{http://pubs.vmware.com/vsphere-50/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-50-security-guide.pdf}
+\item \url{http://bit.ly/useful-windows-one-liners}
+\item \url{http://bit.ly/vmware-esxi-reference}
 \end{itemize}
 
-\section*{Very Useful Downloads}
+\section*{Tool Downloads}
+
 \begin{itemize}
 \small
-\item {Sys Internals:} \url{http://technet.microsoft.com/en-us/sysinternals/bb842062}
-\item {Seconfig XP:} \url{http://seconfig.sytes.net/}
+\item Sys Internals: \url{http://bit.ly/sys-internals}
+\item Seconfig XP: \url{http://seconfig.sytes.net/}
 \end{itemize}
+
 \end{multicols*}
 
 \end{document}
