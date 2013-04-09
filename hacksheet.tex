@@ -430,6 +430,21 @@ dir=out remoteport=4099 action=block}
 \cmd{\windows}{time}
 \end{action}
 
+\subsection*{Networking}
+
+\begin{action}{Forward a TCP/UDP port}
+\cmd{\unix}{mkfifo f ;\\
+nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
+\cmd{\linux}{iptables -t nat -A OUTPUT|POSTROUTING \textbackslash\\
+  -p tcp -s x.x.x.x --sport 80 -j SNAT \textbackslash\\
+  --to-destination 6666}
+\cmd{\linux}{iptables -t nat -A INPUT|PREROUTING \textbackslash\\
+  -p tcp -d x.x.x.x --dport 80 -j DNAT \textbackslash\\
+  --to-destination :6666}
+% Can we do this with -j REDIRECT as well?
+%iptables -A PREROUTING -i eth1 -p tcp -m tcp --dport 80 -j REDIRECT --to-port 8080
+\end{action}
+
 \subsection*{Databases}
 
 \begin{action}{Export/Restore a MySQL Database}
