@@ -62,7 +62,7 @@
 
 \newenvironment{action}[1]
   {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
-  {\end{itemize}\end{minipage}\vspace*{3pt}}
+  {\end{itemize}\end{minipage}\vspace*{8pt}}
 \newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
 \newcommand{\comment}[1]{\textrm{\small(#1)}}
 \newcommand{\bulletpoint}[1]{\item {\small #1}}
@@ -241,11 +241,11 @@ Windows (\windows).
 \cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
 \end{action}
 
+\newpage
+
 \begin{action}{Check \texttt{sudo} users}
 \cmd{\unix}{visudo}
 \end{action}
-
-\newpage
 
 \begin{action}{Check crontab users}
 \cmd{\unix}{for u in \$(cut -f1 -d: /etc/passwd); do crontab -u \$u -l; done}
