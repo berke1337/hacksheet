@@ -54,6 +54,8 @@
 \newcommand{\kkt}{\os{2k3}}
 \newcommand{\kke}{\os{2k8}}
 \newcommand{\seven}{\os{7}}
+
+% TODO: These are not really OSes, we distinguish them. --mavam
 \newcommand{\mysql}{\os{mysql}}
 \newcommand{\postgres}{\os{psql}}
 \newcommand{\win}{\os{sqlcmd}}
@@ -428,7 +430,7 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
 
-\section*{System Administration}
+\section*{Miscellaneous}
 
 \subsection*{Date and Time}
 
@@ -438,7 +440,7 @@ dir=out remoteport=4099 action=block}
 \cmd{\windows}{time}
 \end{action}
 
-\subsection*{Networking}
+\subsection*{Network}
 
 \begin{action}{Forward a TCP/UDP port}
 \cmd{\unix}{mkfifo f ;\\
@@ -485,9 +487,9 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \end{action}
 
 
-\subsection*{Miscellaneous Windows Tasks}
+\subsection*{Windows Tasks}
 
-\begin{action}{Download File from Internet}
+\begin{action}{Download file from Internet}
 \cmd{\windows}{ 
 Powershell \\
 \$source = "http:www.download.com/file.txt" \\
@@ -496,7 +498,7 @@ Powershell \\
 \$wc.DownloadFile(\$source, \$destination)}
 \end{action}
   
-\begin{action}{driver query}
+\begin{action}{List device drivers and their properties}
 \cmd{\windows}{driverquery (-v)}
 \end{action}
 
