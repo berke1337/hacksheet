@@ -193,6 +193,16 @@ Windows (\windows).
 
 \subsection*{User Management}
 
+\begin{action}{Inspect logged in and past users}
+\cmd{\unix}{w}
+\cmd{\unix}{last | head}
+\cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
+\tool{\windows}{PsLoggedOn}
+\tool{\windows}{Task Manager \click Users Tab}
+\cmd{\windows}{wmic computersystem get username}
+\cmd{\windows}{wmic /node:\emph{remotecomputer} computersystem \\ get username}
+\end{action}
+
 \begin{action}{Show account security settings}
 \cmd{\unix}{passwd -l \emph{user}}
 \cmd{\linux}{chage -l \emph{user}}
@@ -234,6 +244,8 @@ Windows (\windows).
 \begin{action}{Check \texttt{sudo} users}
 \cmd{\unix}{visudo}
 \end{action}
+
+\newpage
 
 \begin{action}{Check crontab users}
 \cmd{\unix}{for u in \$(cut -f1 -d: /etc/passwd); do crontab -u \$u -l; done}
@@ -411,18 +423,6 @@ dir=out remoteport=4099 action=block}
 \cmd{\linux}{netstat -punt}
 \cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
 \end{action} 
-
-\subsection*{Users}
-
-\begin{action}{Inspect logged in and past users}
-\cmd{\unix}{w}
-\cmd{\unix}{last | head}
-\cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
-\tool{\windows}{PsLoggedOn}
-\tool{\windows}{Task Manager (open as administrator) -> Users Tab}
-\cmd{\windows}{wmic computersystem get username}
-\cmd{\windows}{wmic /node:\emph{remotecomputer} computersystem get username}
-\end{action}
 
 \subsection*{Cleanup}
 
