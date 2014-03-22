@@ -504,32 +504,35 @@ Powershell \\
 
 \subsection*{OpenSSL Certificate Manipulation}
 
-\begin{action}{Generate a new private key and Certificate Signing Request}
-    \cmd{\linux}{openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout privateKey.key}
+\begin{action}{Create a self-signed certificate}
+    \cmd{\unix}{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout
+    priv.key -out cert.crt}
 \end{action}
-\begin{action}{Generate a self-signed certificate}
-    \cmd{\linux}{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt}
+\begin{action}{Create a private key and CSR}
+    \cmd{\unix}{openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout
+    priv.key}
 \end{action}
-\begin{action}{Generate a certificate signing request (CSR) for an existing private key}
-    \cmd{\linux}{openssl req -out CSR.csr -key privateKey.key -new}
+\begin{action}{Create CSR for an existing private key}
+    \cmd{\unix}{openssl req -out CSR.csr -key priv.key -new}
 \end{action}
-\begin{action}{Generate a certificate signing request based on an existing certificate}
-    \cmd{\linux}{openssl x509 -x509toreq -in certificate.crt -out CSR.csr -signkey privateKey.key}
+\begin{action}{Create a CSR for an existing certificate}
+    \cmd{\unix}{openssl x509 -x509toreq -in cert.crt -out CSR.csr
+    -signkey priv.key}
 \end{action}
-\begin{action}{Remove a passphrase from a private key}
-    \cmd{\linux}{openssl rsa -in privateKey.pem -out newPrivateKey.pem}
+\begin{action}{Remove passphrase from a private key}
+    \cmd{\unix}{openssl rsa -in priv.pem -out new\_priv.pem}
 \end{action}
-\begin{action}{Check a Certificate Signing Request (CSR)}
-    \cmd{\linux}{openssl req -text -noout -verify -in CSR.csr}
+\begin{action}{Inspect a CSR}
+    \cmd{\unix}{openssl req -text -noout -verify -in CSR.csr}
 \end{action}
-\begin{action}{Check a private key}
-    \cmd{\linux}{openssl rsa -in privateKey.key -check}
+\begin{action}{Inspect a private key}
+    \cmd{\unix}{openssl rsa -in priv.key -check}
 \end{action}
-\begin{action}{Check a certificate}
-    \cmd{\linux}{openssl x509 -in certificate.crt -text -noout}
+\begin{action}{Inspect a certificate}
+    \cmd{\unix}{openssl x509 -in cert.crt -text -noout}
 \end{action}
-\begin{action}{Check a PKCS\#12 file (.pfx or .p12)}
-    \cmd{\linux}{openssl pkcs12 -info -in keyStore.p12}
+\begin{action}{Inspect a PKCS\#12 file (.pfx or .p12)}
+    \cmd{\unix}{openssl pkcs12 -info -in keyStore.p12}
 \end{action}
 
 \section*{References}
