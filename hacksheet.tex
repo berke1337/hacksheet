@@ -300,6 +300,16 @@ Windows (\windows).
 \cmd{\windows}{netsh firewall show portopening}
 \cmd{\windows}{netsh firewall show allowedprogram}
 \cmd{\windows}{netsh firewall show config}
+\cmd{\windows}{netsh firewall show state}
+\end{action}
+\begin{action}{Enable Windows firewall in block mode}
+\cmd{\windows}{netsh firewall set opmode mode = enable}
+\end{action}
+\begin{action}{Add Windows port opening for specific host}
+\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1}
+\end{action}
+\begin{action}{Remove Windows port opening}
+\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP}
 \end{action}
 
 \begin{action}{Close ports}
