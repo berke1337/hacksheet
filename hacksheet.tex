@@ -381,18 +381,6 @@ dir=out remoteport=4099 action=block}
 \button{View} \click \button{Select Columns...} \click \button{Image Path}
 \end{action}
 
-\begin{action}{Display listening TCP/UDP ports}
-\cmd{\linux\windows\unix}{netstat -tun}
-\tool{\windows}{tcpview}
-\cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
-\cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
-\cmd{\freebsd}{sockstat -4 -l}
-\end{action}
-
-\begin{action}{Check active connections to find backdoors}
-\cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
-\end{action}
-
 \begin{action}{Currently Running Tasks/Processes}
 \cmd{\windows}{tasklist -svc} 
 \cmd{\linux\unix}{ps aux | less}
@@ -404,6 +392,23 @@ dir=out remoteport=4099 action=block}
 \cmd{\windows}{taskkill -pid \emph{pid}}
 \cmd{\linux\unix}{kill \emph{pid}}
 \end{action}
+
+\subsection*{Network}
+
+\begin{action}{Display listening TCP/UDP ports}
+\cmd{\linux\unix}{netstat -plunt}
+\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING}\emph{(PowerShell Only)}
+\cmd{\windows}{netstat -aon | findstr LISTENING}\emph{(cmd.exe)}
+\tool{\windows}{tcpview}
+\cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
+\cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
+\cmd{\freebsd}{sockstat -4 -l}
+\end{action}
+
+\begin{action}{Check active connections to find backdoors}
+\cmd{\linux}{netstat -punt}
+\cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
+\end{action} 
 
 \subsection*{Users}
 
