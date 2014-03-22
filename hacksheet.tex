@@ -495,6 +495,36 @@ Powershell \\
 \cmd{\windows}{driverquery (-v)}
 \end{action}
 
+\subsection*{OpenSSL Certificate Manipulation}
+
+\begin{action}{Generate a new private key and Certificate Signing Request}
+    \cmd{\linux}{openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout privateKey.key}
+\end{action}
+\begin{action}{Generate a self-signed certificate}
+    \cmd{\linux}{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout privateKey.key -out certificate.crt}
+\end{action}
+\begin{action}{Generate a certificate signing request (CSR) for an existing private key}
+    \cmd{\linux}{openssl req -out CSR.csr -key privateKey.key -new}
+\end{action}
+\begin{action}{Generate a certificate signing request based on an existing certificate}
+    \cmd{\linux}{openssl x509 -x509toreq -in certificate.crt -out CSR.csr -signkey privateKey.key}
+\end{action}
+\begin{action}{Remove a passphrase from a private key}
+    \cmd{\linux}{openssl rsa -in privateKey.pem -out newPrivateKey.pem}
+\end{action}
+\begin{action}{Check a Certificate Signing Request (CSR)}
+    \cmd{\linux}{openssl req -text -noout -verify -in CSR.csr}
+\end{action}
+\begin{action}{Check a private key}
+    \cmd{\linux}{openssl rsa -in privateKey.key -check}
+\end{action}
+\begin{action}{Check a certificate}
+    \cmd{\linux}{openssl x509 -in certificate.crt -text -noout}
+\end{action}
+\begin{action}{Check a PKCS\#12 file (.pfx or .p12)}
+    \cmd{\linux}{openssl pkcs12 -info -in keyStore.p12}
+\end{action}
+
 \section*{References}
 
 \begin{itemize}
@@ -502,6 +532,7 @@ Powershell \\
 \item \url{http://bit.ly/cmd-line-kung-fu}
 \item \url{http://bit.ly/useful-windows-one-liners}
 \item \url{http://bit.ly/vmware-esxi-reference}
+\item \url{http://bit.ly/ssl-commands}
 \end{itemize}
 
 \section*{Tool Downloads}
