@@ -70,6 +70,7 @@
 \newcommand{\button}[1]{\footnotesize\sf#1}
 \newcommand{\click}{$\rightarrow$\xspace}
 \newcommand{\checkbox}{\CheckedBox}
+\newcommand{\home}{\raise.17ex\hbox{$\scriptstyle\sim$}}
 
 \begin{document}
 
@@ -204,7 +205,7 @@ Windows (\windows).
 \end{action}
 
 \begin{action}{Show account security settings}
-\cmd{\unix}{passwd -l \emph{user}}
+\cmd{\unix}{passwd -S \emph{user}}
 \cmd{\linux}{chage -l \emph{user}}
 \cmd{\windows}{net accounts}
 \cmd{\windows}{net accounts /domain}
@@ -252,8 +253,8 @@ Windows (\windows).
 \end{action}
 
 \begin{action}{Check remote authentication}
-\cmd{\unix}{vi \textasciitilde/.rhosts}
-\cmd{\unix}{vi \textasciitilde/.ssh/*}
+\cmd{\unix}{vi \home/.rhosts}
+\cmd{\unix}{vi \home/.ssh/*}
 \end{action}
 
 \begin{action}{Change passwords}
@@ -326,9 +327,6 @@ dir=out remoteport=4099 action=block}
 \click \button{Apply}
 \click \button{ Yes}
 \end{action}
-
-
-
 
 \begin{action}{Check DNS resolver}
 \cmd{\unix}{vi /etc/resolv.conf}
@@ -441,7 +439,6 @@ dir=out remoteport=4099 action=block}
 \end{action}
 
 \section*{Miscellaneous}
-
 \subsection*{Date and Time}
 
 \begin{action}{Set date and time}
@@ -456,46 +453,72 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{mkfifo f ;\\
 nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \cmd{\linux}{iptables -t nat -A OUTPUT|POSTROUTING \textbackslash\\
-  -p tcp -s x.x.x.x --sport 80 -j SNAT \textbackslash\\
-  --to-destination 6666}
+  -p tcp -s x.x.x.x -{}-sport 80 -j SNAT \textbackslash\\
+  -{}-to-destination 6666}
 \cmd{\linux}{iptables -t nat -A INPUT|PREROUTING \textbackslash\\
-  -p tcp -d x.x.x.x --dport 80 -j DNAT \textbackslash\\
-  --to-destination :6666}
+  -p tcp -d x.x.x.x -{}-dport 80 -j DNAT \textbackslash\\
+  -{}-to-destination :6666}
 % Can we do this with -j REDIRECT as well?
-%iptables -A PREROUTING -i eth1 -p tcp -m tcp --dport 80 -j REDIRECT --to-port 8080
+%iptables -A PREROUTING -i eth1 -p tcp -m tcp -{}-dport 80 -j REDIRECT -{}-to-port 8080
 \end{action}
 
 \subsection*{Databases}
 
 \begin{action}{Export/Restore}
-\cmd{\mysql}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
-\cmd{\mysql}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
-\cmd{\postgres}{pg\_dump \emph{database\_name} > dump.sql}
-\cmd{\postgres}{psql -d \emph{database\_name} -f dump.sql}
+    \cmd{\mysql}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+    \cmd{\mysql}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+    \cmd{\postgres}{pg\_dump \emph{database\_name} > dump.sql}
+    \cmd{\postgres}{psql -d \emph{database\_name} -f dump.sql}
 \end{action}
 \begin{action}{Change user password}
-\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
-\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
-\cmd{\win}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
+    \cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
+    \cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
+    \cmd{\win}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
 \end{action}
 \begin{action}{Add/Delete user}
-\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
-\cmd{\mysql}{DROP USER user;}
-\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
-\cmd{\postgres}{DROP USER user-name;}
+    \cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
+    \cmd{\mysql}{DROP USER user;}
+    \cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
+    \cmd{\postgres}{DROP USER user-name;}
 \end{action}
 \begin{action}{Permissions}
-\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
-\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
-\cmd{\win}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
-\cmd{\win}{GRANT SELECT ON *.* TO user; GO;}
-\cmd{\win}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
-\cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
+    \cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
+    \cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+    \cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+    \cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
+    \cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
+    \cmd{\win}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
+    \cmd{\win}{GRANT SELECT ON *.* TO user; GO;}
+    \cmd{\win}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
+    \cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
 \end{action}
 
+\subsection*{Backing up with Git}
+This should be performed on all boxes with files that matter (most likely all, even Windows) after the initial hardening step and git can be installed. \\
+
+\begin{action}{Central Repo setup}
+    \cmd{\unix}{adduser git; mkdir /backups; chown git:git /backups}
+    \cmd{\unix}{su git; git init -{}-bare /backups}
+\end{action}
+$\star$~Host backup setup \begin{itemize}[leftmargin=*]
+\item[] This should be performed in any directory that has files of reasonable size that are important. Candidates include \emph{/etc}, \emph{\home}, \emph{/var/www}. \\
+\item[] 
+    \begin{action}{Independent of Central Repo}
+        \cmd{\unix}{cd \emph{dir}}
+        \cmd{\unix}{git init}
+        \cmd{\unix}{git checkout -b \emph{hostname}/\emph{dir}}
+        \cmd{\unix}{git add .}
+        \cmd{\unix}{git commit -m "Initial import of \emph{hostname}/\emph{dir}"}
+    \end{action}
+\item[] 
+    \begin{action}{Once central repo has been setup}
+        \cmd{\unix}{cd \emph{dir}}
+        \cmd{\unix}{git remote add -f origin ssh://git@\emph{githost}/backups}
+        \cmd{\unix}{git fetch origin}
+        \cmd{\unix}{git push origin HEAD}
+    \end{action}
+\item[] When making changes to version controlled files, make sure to commit and \emph{push} the changes with descriptive comments. Also, periodically fetch from origin in order to make the backups distributed across our network.
+\end{itemize}
 
 \subsection*{Windows Tasks}
 
