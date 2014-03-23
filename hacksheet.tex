@@ -303,12 +303,15 @@ Windows (\windows).
 \cmd{\windows}{netsh firewall show config}
 \cmd{\windows}{netsh firewall show state}
 \end{action}
+
 \begin{action}{Enable Windows firewall in block mode}
 \cmd{\windows}{netsh firewall set opmode mode = enable}
 \end{action}
+
 \begin{action}{Add Windows port opening for specific host}
 \cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1}
 \end{action}
+
 \begin{action}{Remove Windows port opening}
 \cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP}
 \end{action}
@@ -322,7 +325,7 @@ dir=out remoteport=4099 action=block}
 \begin{action} {Shut down SMB vulnerable services}
 \tool{\windows}{Seconfig XP}
 \checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
-\checkbox{Disable SMB over TCP/IP} 
+\checkbox{Disable SMB over TCP/IP}
 \checkbox{Disable RPC over TCP/IP}
 \click \button{Apply}
 \click \button{ Yes}
@@ -370,7 +373,7 @@ dir=out remoteport=4099 action=block}
   Ubuntu)
 \cmd{\freebsd}{less /etc/rc.local} (deprecated)
 \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
-\tool{\windows}{Autoruns} 
+\tool{\windows}{Autoruns}
 \click\button{Options}
 \click\button{Filter Options}
 \checkbox{Verify code signatures}
@@ -404,7 +407,7 @@ dir=out remoteport=4099 action=block}
 \end{action}
 
 \begin{action}{Currently Running Tasks/Processes}
-\cmd{\windows}{tasklist -svc} 
+\cmd{\windows}{tasklist -svc}
 \cmd{\linux\unix}{ps aux | less}
 \cmd{\linux\unix}{top}
 \cmd{\linux\unix}{ps -u \emph{user}}
@@ -430,7 +433,7 @@ dir=out remoteport=4099 action=block}
 \begin{action}{Check active connections to find backdoors}
 \cmd{\linux}{netstat -punt}
 \cmd{\unix}{lsof -nPi | awk '/ESTABLISHED/'}
-\end{action} 
+\end{action}
 
 \subsection*{Cleanup}
 
@@ -439,6 +442,7 @@ dir=out remoteport=4099 action=block}
 \end{action}
 
 \section*{Miscellaneous}
+
 \subsection*{Date and Time}
 
 \begin{action}{Set date and time}
@@ -501,31 +505,36 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \begin{action}{Open Network Connections}
 \cmd{\windows}{ncpa.cpl}
 \end{action}
+
 \begin{action}{Open Basic Firewall}
 \cmd{\windows}{firewall.cpl}
 \end{action}
+
 \begin{action}{Open Advanced Firewall}
 \cmd{\windows}{wf.msc}
 \end{action}
+
 \begin{action}{Open Internet Options}
 \cmd{\windows}{inetcpl.cpl}
 \end{action}
+
 \begin{action}{Open Programs \& Features}
 \cmd{\windows}{appwiz.cpl}
 \end{action}
+
 \begin{action}{Open Local User Manager}
 \cmd{\windows}{lusrmgr.msc}
 \end{action}
 
 \begin{action}{Download file from Internet}
-\cmd{\windows}{ 
+\cmd{\windows}{
 Powershell \\
 \$source = "http:www.download.com/file.txt" \\
 \$destination = "c:\textbackslash temp\textbackslash file.txt" \\
 \$wc = New-Object System.Net.WebClient \\
 \$wc.DownloadFile(\$source, \$destination)}
 \end{action}
-  
+
 \begin{action}{List device drivers and their properties}
 \cmd{\windows}{driverquery (-v)}
 \end{action}
@@ -536,29 +545,37 @@ Powershell \\
     \cmd{\unix}{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout
     priv.key -out cert.crt}
 \end{action}
+
 \begin{action}{Create a private key and CSR}
     \cmd{\unix}{openssl req -out CSR.csr -new -newkey rsa:2048 -nodes -keyout
     priv.key}
 \end{action}
+
 \begin{action}{Create CSR for an existing private key}
     \cmd{\unix}{openssl req -out CSR.csr -key priv.key -new}
 \end{action}
+
 \begin{action}{Create a CSR for an existing certificate}
     \cmd{\unix}{openssl x509 -x509toreq -in cert.crt -out CSR.csr
     -signkey priv.key}
 \end{action}
+
 \begin{action}{Remove passphrase from a private key}
     \cmd{\unix}{openssl rsa -in priv.pem -out new\_priv.pem}
 \end{action}
+
 \begin{action}{Inspect a CSR}
     \cmd{\unix}{openssl req -text -noout -verify -in CSR.csr}
 \end{action}
+
 \begin{action}{Inspect a private key}
     \cmd{\unix}{openssl rsa -in priv.key -check}
 \end{action}
+
 \begin{action}{Inspect a certificate}
     \cmd{\unix}{openssl x509 -in cert.crt -text -noout}
 \end{action}
+
 \begin{action}{Inspect a PKCS\#12 file (.pfx or .p12)}
     \cmd{\unix}{openssl pkcs12 -info -in keyStore.p12}
 \end{action}
