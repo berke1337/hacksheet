@@ -3,6 +3,11 @@ The Hack Sheet
 
 The **Hack Sheet** summarizes key tasks that help to keep a network secure.
 
+Download
+--------
+
+We host a compiled PDF of the hacksheet at http://cyberteam.berkeley.edu/hacksheet.pdf.
+
 License
 -------
 
