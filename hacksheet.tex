@@ -55,17 +55,13 @@
 \newcommand{\kke}{\os{2k8}}
 \newcommand{\seven}{\os{7}}
 
-% TODO: These are not really OSes, we distinguish them. --mavam
-\newcommand{\mysql}{\os{mysql}}
-\newcommand{\postgres}{\os{psql}}
-\newcommand{\win}{\os{sqlcmd}}
-
 \newenvironment{action}[1]
   {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
   {\end{itemize}\end{minipage}\vspace*{8pt}}
 \newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
 \newcommand{\comment}[1]{\textrm{\small(#1)}}
 \newcommand{\bulletpoint}[1]{\item {\small #1}}
+\newcommand{\app}[1]{\footnotesize\sc{#1}}
 \newcommand{\tool}[2]{\item[#1] {\footnotesize\sc{#2}}\xspace}
 \newcommand{\button}[1]{\footnotesize\sf#1}
 \newcommand{\click}{$\rightarrow$\xspace}
@@ -242,7 +238,7 @@ Windows (\windows).
 \cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
 \end{action}
 
-\newpage
+\columnbreak
 
 \begin{action}{Check \texttt{sudo} users}
 \cmd{\unix}{visudo}
@@ -335,6 +331,8 @@ dir=out remoteport=4099 action=block}
 \cmd{\unix}{vi /etc/resolv.conf}
 \end{action}
 
+\columnbreak
+
 \begin{action}{Disable IPv6}
 \cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
 \cmd{\linux}{vi /etc/sysctl.conf\\
@@ -362,6 +360,8 @@ dir=out remoteport=4099 action=block}
   \cmd{\linux}{vi /etc/network/interfaces} \comment{Ubuntu}
   \cmd{\linux}{vi /etc/sysconfig/network-scripts/ifcfg-eth*} \comment{RHEL}
 \end{action}
+
+\vfill
 
 \section*{Forensics}
 
@@ -468,17 +468,21 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 
 \subsection*{Databases}
 
+\newcommand{\mysql}{\app{mysql}}
+\newcommand{\postgres}{\app{psql}}
+\newcommand{\mssql}{\app{mssql}}
+
 \begin{action}{Export/Restore}
-\cmd{\mysql}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
-\cmd{\mysql}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
-\cmd{\postgres}{pg\_dump \emph{database\_name} > dump.sql}
-\cmd{\postgres}{psql -d \emph{database\_name} -f dump.sql}
+\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
+\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
 \end{action}
 
 \begin{action}{Change user password}
 \cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
 \cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
-\cmd{\win}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
+\cmd{\mssql}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
 \end{action}
 
 \begin{action}{Add/Delete user}
@@ -494,10 +498,10 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
 \cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
 \cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
-\cmd{\win}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
-\cmd{\win}{GRANT SELECT ON *.* TO user; GO;}
-\cmd{\win}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
-\cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
+\cmd{\mssql}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
+\cmd{\mssql}{GRANT SELECT ON *.* TO user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
 \end{action}
 
 \subsection*{Windows Tasks}
@@ -597,7 +601,6 @@ Powershell \\
 \item Sys Internals: \url{http://bit.ly/sys-internals}
 \item Seconfig XP: \url{http://seconfig.sytes.net/}
 \end{itemize}
-
 \end{multicols*}
 
 \end{document}
