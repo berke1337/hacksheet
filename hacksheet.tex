@@ -15,7 +15,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{multicol}
 \usepackage{setspace}
-\usepackage{titlesec}
+%\usepackage{titlesec}
 \usepackage{upquote}
 \usepackage{xspace}
 \usepackage{wasysym}
@@ -32,7 +32,7 @@
 }
 \setitemize{itemsep=1pt,topsep=0pt,parsep=1pt,leftmargin=10pt}
 %\titleformat{\subsection}{\sc}{}{}{}
-\titlespacing{\subsection}{0pt}{*0}{*1}
+%\titlespacing{\subsection}{0pt}{*0}{*1}
 
 \newcommand{\todo}[1]{\textit{\textcolor{red}{TODO: #1}}}
 \newcommand{\minisec}[1]{\textsc{#1}\\}
@@ -56,8 +56,8 @@
 \newcommand{\seven}{\os{7}}
 
 \newenvironment{action}[1]
-  {\begin{minipage}[c]{\linewidth}$\star$~#1\begin{itemize}[leftmargin=1cm]}
-  {\end{itemize}\end{minipage}\vspace*{8pt}}
+  {\paragraph{$\star$~#1}\begin{itemize}[leftmargin=1cm]}
+  {\end{itemize}}
 \newcommand{\cmd}[2]{\item[#1] {\small\tt\# #2}}
 \newcommand{\comment}[1]{\textrm{\small(#1)}}
 \newcommand{\bulletpoint}[1]{\item {\small #1}}
@@ -238,8 +238,6 @@ Windows (\windows).
 \cmd{\unix}{vi /etc/group} \comment{admin, sudo, wheel}
 \end{action}
 
-\columnbreak
-
 \begin{action}{Check \texttt{sudo} users}
 \cmd{\unix}{visudo}
 \end{action}
@@ -330,8 +328,6 @@ dir=out remoteport=4099 action=block}
 \begin{action}{Check DNS resolver}
 \cmd{\unix}{vi /etc/resolv.conf}
 \end{action}
-
-\columnbreak
 
 \begin{action}{Disable IPv6}
 \cmd{\linux}{ipv6.disable=1} \comment{add to kernel line}
