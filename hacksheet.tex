@@ -465,32 +465,35 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \subsection*{Databases}
 
 \begin{action}{Export/Restore}
-    \cmd{\mysql}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
-    \cmd{\mysql}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
-    \cmd{\postgres}{pg\_dump \emph{database\_name} > dump.sql}
-    \cmd{\postgres}{psql -d \emph{database\_name} -f dump.sql}
+\cmd{\mysql}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+\cmd{\mysql}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+\cmd{\postgres}{pg\_dump \emph{database\_name} > dump.sql}
+\cmd{\postgres}{psql -d \emph{database\_name} -f dump.sql}
 \end{action}
+
 \begin{action}{Change user password}
-    \cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
-    \cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
-    \cmd{\win}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
+\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
+\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
+\cmd{\win}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
 \end{action}
+
 \begin{action}{Add/Delete user}
-    \cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
-    \cmd{\mysql}{DROP USER user;}
-    \cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
-    \cmd{\postgres}{DROP USER user-name;}
+\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
+\cmd{\mysql}{DROP USER user;}
+\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
+\cmd{\postgres}{DROP USER user-name;}
 \end{action}
+
 \begin{action}{Permissions}
-    \cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
-    \cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-    \cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-    \cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
-    \cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
-    \cmd{\win}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
-    \cmd{\win}{GRANT SELECT ON *.* TO user; GO;}
-    \cmd{\win}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
-    \cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
+\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
+\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
+\cmd{\win}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
+\cmd{\win}{GRANT SELECT ON *.* TO user; GO;}
+\cmd{\win}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
+\cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
 \end{action}
 
 \subsection*{Backing up with Git}
