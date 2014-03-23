@@ -496,33 +496,6 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 \cmd{\win}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
 \end{action}
 
-\subsection*{Backing up with Git}
-This should be performed on all boxes with files that matter (most likely all, even Windows) after the initial hardening step and git can be installed. \\
-
-\begin{action}{Central Repo setup}
-    \cmd{\unix}{adduser git; mkdir /backups; chown git:git /backups}
-    \cmd{\unix}{su git; git init -{}-bare /backups}
-\end{action}
-$\star$~Host backup setup \begin{itemize}[leftmargin=*]
-\item[] This should be performed in any directory that has files of reasonable size that are important. Candidates include \emph{/etc}, \emph{\home}, \emph{/var/www}. \\
-\item[] 
-    \begin{action}{Independent of Central Repo}
-        \cmd{\unix}{cd \emph{dir}}
-        \cmd{\unix}{git init}
-        \cmd{\unix}{git checkout -b \emph{hostname}/\emph{dir}}
-        \cmd{\unix}{git add .}
-        \cmd{\unix}{git commit -m "Initial import of \emph{hostname}/\emph{dir}"}
-    \end{action}
-\item[] 
-    \begin{action}{Once central repo has been setup}
-        \cmd{\unix}{cd \emph{dir}}
-        \cmd{\unix}{git remote add -f origin ssh://git@\emph{githost}/backups}
-        \cmd{\unix}{git fetch origin}
-        \cmd{\unix}{git push origin HEAD}
-    \end{action}
-\item[] When making changes to version controlled files, make sure to commit and \emph{push} the changes with descriptive comments. Also, periodically fetch from origin in order to make the backups distributed across our network.
-\end{itemize}
-
 \subsection*{Windows Tasks}
 
 \begin{action}{Open Network Connections}
