@@ -17,7 +17,7 @@ clean: purge
 	-rm -f $(DOCUMENT:.tex=.pdf)
 
 web: $(DOCUMENT:.tex=.pdf)
-	@scp $(DOCUMENT:.tex=.pdf) cyberteam.berkeley.edu:
+	@scp $(DOCUMENT:.tex=.pdf) cybertea@cyberteam.berkeley.edu:~/public_html/
 
 %.pdf: %.tex
 	$(LATEX) $<
