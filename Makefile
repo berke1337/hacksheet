@@ -16,6 +16,9 @@ purge:
 clean: purge
 	-rm -f $(DOCUMENT:.tex=.pdf)
 
+web: $(DOCUMENT:.tex=.pdf)
+	@scp $(DOCUMENT:.tex=.pdf) cyberteam.berkeley.edu:
+
 %.pdf: %.tex
 	$(LATEX) $<
 	@egrep -q $(RERUNBIB) $*.log && $(BIBTEX) $* && $(LATEX) $<; true
