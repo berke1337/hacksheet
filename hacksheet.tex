@@ -576,8 +576,16 @@ Powershell \\
     \cmd{\unix}{openssl x509 -in cert.crt -text -noout}
 \end{action}
 
+\begin{action}{Inspect ASN.1 structure of a certificate}
+    \cmd{\unix}{openssl asn1parse -in cert.crt}
+\end{action}
+
 \begin{action}{Inspect a PKCS\#12 file (.pfx or .p12)}
     \cmd{\unix}{openssl pkcs12 -info -in keyStore.p12}
+\end{action}
+
+\begin{action}{Connect to site and validate certificate chain}
+    \cmd{\unix}{openssl s\_client -showcerts -connect host:443}
 \end{action}
 
 \section*{References}
