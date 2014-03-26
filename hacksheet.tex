@@ -299,21 +299,29 @@ Windows (\windows).
 \end{action}
 
 \begin{action}{Enable Windows firewall in block mode}
-\cmd{\windows}{netsh firewall set opmode mode = enable}
+    \cmd{\windows}{netsh firewall set opmode mode = enable} \emph{(Server 2003 and earlier)}
+    \cmd{\windows}{netsh advfirewall set allprofiles state on} \emph{(Vista and later)}
+    \cmd{\windows}{netsh advfirewall set allprofiles firewallpolicy "blockinboundalways,allowoutbound"} \emph{(Vista and later)}
 \end{action}
 
 \begin{action}{Add Windows port opening for specific host}
-\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1}
+\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1} \emph{(Server 2003 and earlier)}
 \end{action}
 
 \begin{action}{Remove Windows port opening}
-\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP}
+\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP} \emph{(Server 2003 and earlier)}
 \end{action}
 
-\begin{action}{Close ports}
+\begin{action}{Close ports (outbound)}
 \cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" \\
 protocol=TCP\\
-dir=out remoteport=4099 action=block}
+dir=out remoteport=4099 action=block}\emph{(Vista and later)}
+\end{action}
+
+\begin{action}{Open ports (inbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="Allow HTTP" \\
+protocol=TCP\\
+dir=in localport=80 action=allow}\emph{(Vista and later)}
 \end{action}
 
 \begin{action} {Shut down SMB vulnerable services}
@@ -418,8 +426,8 @@ dir=out remoteport=4099 action=block}
 
 \begin{action}{Display listening TCP/UDP ports}
 \cmd{\linux\unix}{netstat -plunt}
-\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING}\emph{(PowerShell Only)}
-\cmd{\windows}{netstat -aon | findstr LISTENING}\emph{(cmd.exe)}
+\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING} \emph{(PowerShell Only)}
+\cmd{\windows}{netstat -aon | findstr LISTENING} \emph{(cmd.exe)}
 \tool{\windows}{tcpview}
 \cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
 \cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
