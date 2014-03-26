@@ -457,6 +457,12 @@ dir=in localport=80 action=allow}\emph{(Vista and later)}
 
 \subsection*{Network}
 
+\newcommand{\cisco}{\app{cisco}}
+
+\begin{action}{Show the active config of a Cisco device}
+\cmd{\cisco}{show running-config}
+\end{action}
+
 \begin{action}{Forward a TCP/UDP port}
 \cmd{\unix}{mkfifo f ;\\
 nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
