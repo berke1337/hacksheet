@@ -190,8 +190,7 @@ UNIX (\unix), and Windows (\windows).
 \end{action}
 
 \begin{action}{Enable ASLR}
-\cmd{\linux}{echo 2 > /proc/sys/kernel/randomize\_va\_space\\
-             /etc/sysctl.conf:\\kernel.randomize\_va\_space = 2}
+\tool{\windows}{ProcessExplorer \click Select Columns \click Enable ASLR}
 \tool{\windows}{EMET}
 \cmd{\windows}{reg add
                hklm{\textbackslash}%
@@ -201,11 +200,14 @@ UNIX (\unix), and Windows (\windows).
                session manager{\textbackslash}%
                memory management\\
                /v moveimages /t REG\_DWORD /d 1 /f}
+\cmd{\linux}{echo 2 > /proc/sys/kernel/randomize\_va\_space\\
+             /etc/sysctl.conf:\\kernel.randomize\_va\_space = 2}
 \cmd{\solaris}{sxadm enable -c model=tagged-files aslr}
 \cmd{\solaris}{sxadm enable -c model=all aslr}
 \end{action}
 
 \begin{action}{Enable DEP}
+\tool{\windows}{ProcessExplorer \click Select Columns \click DEP Status}
 \tool{\windows}{EMET}
 \cmd{\windows}{\comment{Vista}\\
                bcdedit /set nx AlwaysOn\\
