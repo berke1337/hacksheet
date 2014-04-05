@@ -43,10 +43,11 @@
 \newcommand{\fifth}{\emph{(v)}~}
 
 \newcommand{\os}[1]{\texttt{\footnotesize{#1}}}
+\newcommand{\unix}{\os{U}}
 \newcommand{\freebsd}{\os{F}}
 \newcommand{\bsd}{\os{B}}
-\newcommand{\unix}{\os{U}}
 \newcommand{\linux}{\os{L}}
+\newcommand{\solaris}{\os{S}}
 \newcommand{\macos}{\os{M}}
 \newcommand{\windows}{\os{W}}
 \newcommand{\xp}{\os{xp}}
@@ -100,8 +101,8 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \section*{Terminology}
 
 Each command contains a list of flags that indicate the OS requirement: Linux
-(\linux), BSD (\bsd), FreeBSD (\freebsd), Mac OS (\macos), UNIX (\unix), and
-Windows (\windows).
+(\linux), BSD (\bsd), FreeBSD (\freebsd), Mac OS (\macos), Solaris (\solaris),
+UNIX (\unix), and Windows (\windows).
 
 \section*{Reconnaissance}
 
@@ -186,6 +187,34 @@ Windows (\windows).
   IgnoreRhosts yes\\
   RhostsAuthentication no\\
   RhostsRSAAuthentication no}
+\end{action}
+
+\begin{action}{Enable ASLR}
+\cmd{\linux}{echo 2 > /proc/sys/kernel/randomize\_va\_space\\
+             /etc/sysctl.conf:\\kernel.randomize\_va\_space = 2}
+\tool{\windows}{EMET}
+\cmd{\windows}{reg add
+               hklm{\textbackslash}%
+               system{\textbackslash}%
+               currentcontrolset{\textbackslash}%
+               control{\textbackslash}
+               session manager{\textbackslash}%
+               memory management\\
+               /v moveimages /t REG\_DWORD /d 1 /f}
+\cmd{\solaris}{sxadm enable -c model=tagged-files aslr}
+\cmd{\solaris}{sxadm enable -c model=all aslr}
+\end{action}
+
+\begin{action}{Enable DEP}
+\tool{\windows}{EMET}
+\cmd{\windows}{\comment{Vista}\\
+               bcdedit /set nx AlwaysOn\\
+               bcdedit /set nx OptOut}
+\cmd{\linux}{echo 1 > /proc/sys/kernel/exec-shield\\
+             /etc/sysctl.conf: kernel.exec-shield = 1}
+\cmd{\macos}{echo 1 > /proc/sys/kernel/nx\\
+             /etc/sysctl.conf: kernel.nx = 1}
+\cmd{\solaris}{set noexec\_user\_stack=1 {>}> /etc/system}
 \end{action}
 
 \subsection*{User Management}
@@ -618,6 +647,7 @@ Powershell \\
 \small
 \item Sys Internals: \url{http://bit.ly/sys-internals}
 \item Seconfig XP: \url{http://seconfig.sytes.net/}
+\item EMET: \url{http://bit.ly/win-emet}
 \end{itemize}
 \end{multicols*}
 
