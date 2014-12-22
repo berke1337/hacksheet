@@ -98,6 +98,208 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 
 \vspace{-10pt}
 
+\section*{WINDOWS}
+
+\subsection*{Hardening}
+
+\begin{action}{Check devices}
+\bulletpoint{Hardware keylogger (e.g., USB dongles)}
+\bulletpoint{Rogue WiFi cards}
+\end{action}
+
+
+\begin{action}{Enable ASLR}
+\tool{\windows}{ProcessExplorer \click Select Columns \click Enable ASLR}
+\tool{\windows}{EMET}
+\cmd{\windows}{reg add
+               hklm{\textbackslash}%
+               system{\textbackslash}%
+               currentcontrolset{\textbackslash}%
+               control{\textbackslash}
+               session manager{\textbackslash}%
+               memory management\\
+               /v moveimages /t REG\_DWORD /d 1 /f}
+\end{action}
+
+\begin{action}{Enable DEP}
+\tool{\windows}{ProcessExplorer \click Select Columns \click DEP Status}
+\tool{\windows}{EMET}
+\cmd{\windows}{\comment{Vista}\\
+               bcdedit /set nx AlwaysOn\\
+               bcdedit /set nx OptOut}
+\end{action}
+
+\subsection*{User Management}
+
+\begin{action}{Inspect logged in and past users}
+\tool{\windows}{PsLoggedOn}
+\tool{\windows}{Task Manager \click Users Tab}
+\cmd{\windows}{wmic computersystem get username}
+\cmd{\windows}{wmic /node:\emph{remotecomputer} computersystem \\ get username}
+\end{action}
+
+\begin{action}{Show account security settings}
+\cmd{\windows}{net accounts}
+\cmd{\windows}{net accounts /domain}
+\end{action}
+
+\begin{action}{View Users}
+\cmd{\windows}{wmic useraccount list brief}
+\end{action}
+
+\begin{action}{Look for users with root privileges}
+\cmd{\windows}{net localgroup administratos}
+\end{action}
+
+\begin{action}{Look for users with empty passwords}
+\cmd{\windows} {needs to be filled in}
+\end{action}
+
+\begin{action}{Make passwords expire}
+\cmd{\windows}{wmic path Win32\_UserAccount Set PasswordExpires=True}
+\cmd{\windows}{wmic path Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
+\cmd{\windows}{wmic path /Node:\emph{remotecomputer} Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
+\end{action}
+
+\begin{action}{Set maximum number of login failures}
+\cmd{\windows}{net accounts /lockoutthreshold:\emph{maxNumber}}
+\cmd{\windows}{net accounts /lockoutduration:\emph{numberOfMinutes}}
+\end{action}
+
+\begin{action}{Verify group memberships}
+\cmd{\windows}{needs to be filled in}
+\end{action}
+
+\begin{action}{Check remote authentication}
+\cmd{\windows} {needs to be filled in}
+\end{action}
+
+\begin{action}{Change passwords}
+\cmd{\windows}{net user \emph{user} *}
+\end{action}
+
+
+\subsection*{Network}
+
+\begin{action}{Show firewall rules}
+\cmd{\windows}{netsh firewall show portopening}
+\cmd{\windows}{netsh firewall show allowedprogram}
+\cmd{\windows}{netsh firewall show config}
+\cmd{\windows}{netsh firewall show state}
+\end{action}
+
+\begin{action}{Enable Windows firewall in block mode}
+    \cmd{\windows}{netsh firewall set opmode mode = enable} \emph{(Server 2003 and earlier)}
+    \cmd{\windows}{netsh advfirewall set allprofiles state on} \emph{(Vista and later)}
+    \cmd{\windows}{netsh advfirewall set allprofiles firewallpolicy "blockinboundalways,allowoutbound"} \emph{(Vista and later)}
+\end{action}
+
+\begin{action}{Add Windows port opening for specific host}
+\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1} \emph{(Server 2003 and earlier)}
+\end{action}
+
+\begin{action}{Remove Windows port opening}
+\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP} \emph{(Server 2003 and earlier)}
+\end{action}
+
+\begin{action}{Close ports (outbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" \\
+protocol=TCP\\
+dir=out remoteport=4099 action=block}\emph{(Vista and later)}
+\end{action}
+
+\begin{action}{Open ports (inbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="Allow HTTP" \\
+protocol=TCP\\
+dir=in localport=80 action=allow}\emph{(Vista and later)}
+\end{action}
+
+\begin{action} {Shut down SMB vulnerable services}
+\tool{\windows}{Seconfig XP}
+\checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
+\checkbox{Disable SMB over TCP/IP}
+\checkbox{Disable RPC over TCP/IP}
+\click \button{Apply}
+\click \button{ Yes}
+\end{action}
+
+\begin{action}{Open Network Connections}
+\cmd{\windows}{ncpa.cpl}
+\end{action}
+
+\begin{action}{Open Basic Firewall}
+\cmd{\windows}{firewall.cpl}
+\end{action}
+
+\begin{action}{Open Advanced Firewall}
+\cmd{\windows}{wf.msc}
+\end{action}
+
+\begin{action}{Open Internet Options}
+\cmd{\windows}{inetcpl.cpl}
+\end{action}
+
+\begin{action}{Open Programs \& Features}
+\cmd{\windows}{appwiz.cpl}
+\end{action}
+
+\begin{action}{Open Local User Manager}
+\cmd{\windows}{lusrmgr.msc}
+\end{action}
+
+\begin{action}{Download file from Internet}
+\cmd{\windows}{
+Powershell \\
+\$source = "http:www.download.com/file.txt" \\
+\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
+\$wc = New-Object System.Net.WebClient \\
+\$wc.DownloadFile(\$source, \$destination)}
+\end{action}
+
+\begin{action}{List device drivers and their properties}
+\cmd{\windows}{driverquery (-v)}
+\end{action}
+
+\section*{UNIX}
+
+\section*{DATABASES}
+
+\newcommand{\mysql}{\app{mysql}}
+\newcommand{\postgres}{\app{psql}}
+\newcommand{\mssql}{\app{mssql}}
+
+\begin{action}{Export/Restore}
+\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
+\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
+\end{action}
+
+\begin{action}{Change user password}
+\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
+\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
+\cmd{\mssql}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
+\end{action}
+
+\begin{action}{Add/Delete user}
+\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
+\cmd{\mysql}{DROP USER user;}
+\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
+\cmd{\postgres}{DROP USER user-name;}
+\end{action}
+
+\begin{action}{Permissions}
+\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
+\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
+\cmd{\mssql}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
+\cmd{\mssql}{GRANT SELECT ON *.* TO user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
+\end{action}
+
 \section*{Reconnaissance}
 
 \subsection*{Scanning}
@@ -144,7 +346,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \begin{action}{Check devices}
 \bulletpoint{Hardware keylogger (e.g., USB dongles)}
 \bulletpoint{Rogue WiFi cards}
-
 \end{action}
 
 \subsection*{OS \& Software}
@@ -184,16 +385,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \end{action}
 
 \begin{action}{Enable ASLR}
-\tool{\windows}{ProcessExplorer \click Select Columns \click Enable ASLR}
-\tool{\windows}{EMET}
-\cmd{\windows}{reg add
-               hklm{\textbackslash}%
-               system{\textbackslash}%
-               currentcontrolset{\textbackslash}%
-               control{\textbackslash}
-               session manager{\textbackslash}%
-               memory management\\
-               /v moveimages /t REG\_DWORD /d 1 /f}
 \cmd{\linux}{echo 2 > /proc/sys/kernel/randomize\_va\_space\\
              /etc/sysctl.conf:\\kernel.randomize\_va\_space = 2}
 \cmd{\solaris}{sxadm enable -c model=tagged-files aslr}
@@ -201,11 +392,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \end{action}
 
 \begin{action}{Enable DEP}
-\tool{\windows}{ProcessExplorer \click Select Columns \click DEP Status}
-\tool{\windows}{EMET}
-\cmd{\windows}{\comment{Vista}\\
-               bcdedit /set nx AlwaysOn\\
-               bcdedit /set nx OptOut}
 \cmd{\linux}{echo 1 > /proc/sys/kernel/exec-shield\\
              /etc/sysctl.conf: kernel.exec-shield = 1}
 \cmd{\macos}{echo 1 > /proc/sys/kernel/nx\\
@@ -219,26 +405,19 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \cmd{\unix}{w}
 \cmd{\unix}{last | head}
 \cmd{\unix}{ps -ef | awk '\$6 != "?"'} (interactive procs)
-\tool{\windows}{PsLoggedOn}
-\tool{\windows}{Task Manager \click Users Tab}
-\cmd{\windows}{wmic computersystem get username}
-\cmd{\windows}{wmic /node:\emph{remotecomputer} computersystem \\ get username}
 \end{action}
 
 \begin{action}{Show account security settings}
 \cmd{\unix}{passwd -S \emph{user}}
 \cmd{\linux}{chage -l \emph{user}}
-\cmd{\windows}{net accounts}
-\cmd{\windows}{net accounts /domain}
 \end{action}
 
 \begin{action}{View Users}
-\cmd{\windows}{wmic useraccount list brief}
+\cmd{\windows}{needs to be filled in}
 \end{action}
 
 \begin{action}{Look for users with root privileges}
 \cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
-\cmd{\windows}{net localgroup administratos}
 \end{action}
 
 \begin{action}{Look for users with empty passwords}
@@ -246,17 +425,12 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \end{action}
 
 \begin{action}{Make passwords expire}
-\cmd{\windows}{wmic path Win32\_UserAccount Set PasswordExpires=True}
-\cmd{\windows}{wmic path Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
-\cmd{\windows}{wmic path /Node:\emph{remotecomputer} Win32\_UserAccount where name="\emph{username}" Set PasswordExpires=True}
 \cmd{\linux}{chage -d 0 \emph{username}}
 \end{action}
 
 \begin{action}{Set maximum number of login failures}
 \cmd{\linux}{faillog -M \emph{maxNumber} -u \emph{username}}
 \cmd{\linux}{faillog -r -u \emph{username}}
-\cmd{\windows}{net accounts /lockoutthreshold:\emph{maxNumber}}
-\cmd{\windows}{net accounts /lockoutduration:\emph{numberOfMinutes}}
 \end{action}
 
 \begin{action}{Verify group memberships}
@@ -279,7 +453,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \begin{action}{Change passwords}
 \cmd{\unix}{pwgen -sy} \comment{generate strong passwords}
 \cmd{\unix}{passwd \emph{user}}
-\cmd{\windows}{net user \emph{user} *}
 \end{action}
 
 \subsection*{File System}
@@ -317,45 +490,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 
 \begin{action}{Show firewall rules}
 \cmd{\linux}{for t in nat mangle filter raw; do iptables -t \$t -nL; done}
-\cmd{\windows}{netsh firewall show portopening}
-\cmd{\windows}{netsh firewall show allowedprogram}
-\cmd{\windows}{netsh firewall show config}
-\cmd{\windows}{netsh firewall show state}
-\end{action}
-
-\begin{action}{Enable Windows firewall in block mode}
-    \cmd{\windows}{netsh firewall set opmode mode = enable} \emph{(Server 2003 and earlier)}
-    \cmd{\windows}{netsh advfirewall set allprofiles state on} \emph{(Vista and later)}
-    \cmd{\windows}{netsh advfirewall set allprofiles firewallpolicy "blockinboundalways,allowoutbound"} \emph{(Vista and later)}
-\end{action}
-
-\begin{action}{Add Windows port opening for specific host}
-\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1} \emph{(Server 2003 and earlier)}
-\end{action}
-
-\begin{action}{Remove Windows port opening}
-\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP} \emph{(Server 2003 and earlier)}
-\end{action}
-
-\begin{action}{Close ports (outbound)}
-\cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" \\
-protocol=TCP\\
-dir=out remoteport=4099 action=block}\emph{(Vista and later)}
-\end{action}
-
-\begin{action}{Open ports (inbound)}
-\cmd{\windows}{netsh advfirewall firewall add rule name="Allow HTTP" \\
-protocol=TCP\\
-dir=in localport=80 action=allow}\emph{(Vista and later)}
-\end{action}
-
-\begin{action} {Shut down SMB vulnerable services}
-\tool{\windows}{Seconfig XP}
-\checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
-\checkbox{Disable SMB over TCP/IP}
-\checkbox{Disable RPC over TCP/IP}
-\click \button{Apply}
-\click \button{ Yes}
 \end{action}
 
 \begin{action}{Check DNS resolver}
@@ -499,83 +633,6 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
   -{}-to-destination :6666}
 % Can we do this with -j REDIRECT as well?
 %iptables -A PREROUTING -i eth1 -p tcp -m tcp -{}-dport 80 -j REDIRECT -{}-to-port 8080
-\end{action}
-
-\subsection*{Databases}
-
-\newcommand{\mysql}{\app{mysql}}
-\newcommand{\postgres}{\app{psql}}
-\newcommand{\mssql}{\app{mssql}}
-
-\begin{action}{Export/Restore}
-\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
-\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
-\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
-\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
-\end{action}
-
-\begin{action}{Change user password}
-\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
-\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
-\cmd{\mssql}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
-\end{action}
-
-\begin{action}{Add/Delete user}
-\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
-\cmd{\mysql}{DROP USER user;}
-\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
-\cmd{\postgres}{DROP USER user-name;}
-\end{action}
-
-\begin{action}{Permissions}
-\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
-\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
-\cmd{\mssql}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
-\cmd{\mssql}{GRANT SELECT ON *.* TO user; GO;}
-\cmd{\mssql}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
-\cmd{\mssql}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
-\end{action}
-
-\subsection*{Windows Tasks}
-
-\begin{action}{Open Network Connections}
-\cmd{\windows}{ncpa.cpl}
-\end{action}
-
-\begin{action}{Open Basic Firewall}
-\cmd{\windows}{firewall.cpl}
-\end{action}
-
-\begin{action}{Open Advanced Firewall}
-\cmd{\windows}{wf.msc}
-\end{action}
-
-\begin{action}{Open Internet Options}
-\cmd{\windows}{inetcpl.cpl}
-\end{action}
-
-\begin{action}{Open Programs \& Features}
-\cmd{\windows}{appwiz.cpl}
-\end{action}
-
-\begin{action}{Open Local User Manager}
-\cmd{\windows}{lusrmgr.msc}
-\end{action}
-
-\begin{action}{Download file from Internet}
-\cmd{\windows}{
-Powershell \\
-\$source = "http:www.download.com/file.txt" \\
-\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
-\$wc = New-Object System.Net.WebClient \\
-\$wc.DownloadFile(\$source, \$destination)}
-\end{action}
-
-\begin{action}{List device drivers and their properties}
-\cmd{\windows}{driverquery (-v)}
 \end{action}
 
 \subsection*{OpenSSL Certificate Manipulation}
