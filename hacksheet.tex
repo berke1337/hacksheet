@@ -102,12 +102,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 
 \subsection*{Hardening}
 
-\begin{action}{Check devices}
-\bulletpoint{Hardware keylogger (e.g., USB dongles)}
-\bulletpoint{Rogue WiFi cards}
-\end{action}
-
-
 \begin{action}{Enable ASLR}
 \tool{\windows}{ProcessExplorer \click Select Columns \click Enable ASLR}
 \tool{\windows}{EMET}
@@ -178,8 +172,22 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \cmd{\windows}{net user \emph{user} *}
 \end{action}
 
+\subsection*{Domain Administration}
+\begin{action}{AD Commands}
+\cmd{\windows}{import-module Active Directory}
+\cmd{\windows}{get-adcomputer -Filter "name -like '*'"}
+\cmd{\windows}{get-adgroup -Filter "name -like '*'"}
+\cmd{\windows}{get-aduser -Filter "name -like '*'"}
+\cmd{\windows}{get-admember  [GROUPNAME]}
+\end{action}
 
 \subsection*{Network}
+
+\begin{action}{Display listening TCP/UDP ports}
+\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING} \emph{(PowerShell Only)}
+\cmd{\windows}{netstat -aon | findstr LISTENING} \emph{(cmd.exe)}
+\tool{\windows}{tcpview}
+\end{action}
 
 \begin{action}{Show firewall rules}
 \cmd{\windows}{netsh firewall show portopening}
@@ -214,6 +222,10 @@ protocol=TCP\\
 dir=in localport=80 action=allow}\emph{(Vista and later)}
 \end{action}
 
+\begin{action}{List all computers in network}
+\cmd{\windows}{net view}
+\end{action}
+
 \begin{action} {Shut down SMB vulnerable services}
 \tool{\windows}{Seconfig XP}
 \checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
@@ -223,82 +235,41 @@ dir=in localport=80 action=allow}\emph{(Vista and later)}
 \click \button{ Yes}
 \end{action}
 
-\begin{action}{Open Network Connections}
-\cmd{\windows}{ncpa.cpl}
+\section*{Forensics}
+
+\begin{action}{Inspect startup items}
+\tool{\windows}{Autoruns}
+\click\button{Options}
+\click\button{Filter Options}
+\checkbox{Verify code signatures}
+\checkbox{Hide Microsoft entries}
 \end{action}
 
-\begin{action}{Open Basic Firewall}
-\cmd{\windows}{firewall.cpl}
+\begin{action}{Find all unsigned processes}
+\tool{\windows}{ProcessExplorer}
+\button{Options} \click \button{Verify Image Signatures}
 \end{action}
 
-\begin{action}{Open Advanced Firewall}
-\cmd{\windows}{wf.msc}
+\begin{action} {View Process File Location}
+\tool{\windows}{ProcessExplorer}
+\button{View} \click \button{Select Columns...} \click \button{Image Path}
 \end{action}
 
-\begin{action}{Open Internet Options}
-\cmd{\windows}{inetcpl.cpl}
+\begin{action}{Currently Running Tasks/Processes}
+\cmd{\windows}{tasklist -svc}
 \end{action}
 
-\begin{action}{Open Programs \& Features}
-\cmd{\windows}{appwiz.cpl}
+\begin{action}{Kill Tasks/Processes}
+\cmd{\windows}{task -pid \emph{pid}}
 \end{action}
 
-\begin{action}{Open Local User Manager}
-\cmd{\windows}{lusrmgr.msc}
-\end{action}
-
-\begin{action}{Download file from Internet}
-\cmd{\windows}{
-Powershell \\
-\$source = "http:www.download.com/file.txt" \\
-\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
-\$wc = New-Object System.Net.WebClient \\
-\$wc.DownloadFile(\$source, \$destination)}
-\end{action}
-
-\begin{action}{List device drivers and their properties}
-\cmd{\windows}{driverquery (-v)}
+\begin{action}{File signature serification}
+\cmd{\windows}{sigverif}
+\tool{\windows}{sigcheck}
+\cmd{\windows}{sigcheck -e -u -s c:{\textbackslash} }
 \end{action}
 
 \section*{UNIX}
-
-\section*{DATABASES}
-
-\newcommand{\mysql}{\app{mysql}}
-\newcommand{\postgres}{\app{psql}}
-\newcommand{\mssql}{\app{mssql}}
-
-\begin{action}{Export/Restore}
-\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
-\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
-\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
-\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
-\end{action}
-
-\begin{action}{Change user password}
-\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
-\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
-\cmd{\mssql}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
-\end{action}
-
-\begin{action}{Add/Delete user}
-\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
-\cmd{\mysql}{DROP USER user;}
-\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
-\cmd{\postgres}{DROP USER user-name;}
-\end{action}
-
-\begin{action}{Permissions}
-\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
-\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
-\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
-\cmd{\mssql}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
-\cmd{\mssql}{GRANT SELECT ON *.* TO user; GO;}
-\cmd{\mssql}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
-\cmd{\mssql}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
-\end{action}
 
 \section*{Reconnaissance}
 
@@ -306,10 +277,6 @@ Powershell \\
 
 \begin{action}{Ping sweep of subnet and host range}
 \cmd{\unix}{nmap -sP 10.0.0.0/24 192.168.0.128-254}
-\end{action}
-
-\begin{action}{List all computers in network}
-\cmd{\windows}{net view}
 \end{action}
 
 \begin{action}{Scan specific TCP and UDP ports}
@@ -330,23 +297,11 @@ Powershell \\
 \cmd{\unix}{echo QUIT | nc target 1-1024}
 \end{action}
 
-\subsection*{Wireless}
-
-\section*{Vulnerability Scanning}
-
-\subsection*{Web}
 \begin{action}{Look for web server vulnerabilities}
 \cmd{\unix}{nikto -host 10.0.0.1}
 \end{action}
 
 \section*{Hardening}
-
-\subsection*{Physical}
-
-\begin{action}{Check devices}
-\bulletpoint{Hardware keylogger (e.g., USB dongles)}
-\bulletpoint{Rogue WiFi cards}
-\end{action}
 
 \subsection*{OS \& Software}
 
@@ -412,10 +367,6 @@ Powershell \\
 \cmd{\linux}{chage -l \emph{user}}
 \end{action}
 
-\begin{action}{View Users}
-\cmd{\windows}{needs to be filled in}
-\end{action}
-
 \begin{action}{Look for users with root privileges}
 \cmd{\unix}{awk -F: '\$3 == 0 \{print \$1\}' /etc/passwd}
 \end{action}
@@ -476,12 +427,6 @@ Powershell \\
 \cmd{\windows}{sfc /scannow}
 \end{action}
 
-\begin{action}{File signature serification}
-\cmd{\windows}{sigverif}
-\tool{\windows}{sigcheck}
-\cmd{\windows}{sigcheck -e -u -s c:{\textbackslash} }
-\end{action}
-
 \begin{action}{Make files append-only}
 \cmd{\linux}{chattr +a /var/log/foo}
 \end{action}
@@ -524,11 +469,7 @@ Powershell \\
   \cmd{\linux}{vi /etc/sysconfig/network-scripts/ifcfg-eth*} \comment{RHEL}
 \end{action}
 
-\vfill
-
 \section*{Forensics}
-
-\subsection*{Processes}
 
 \begin{action}{Inspect startup items}
 \cmd{\linux}{initctl show-config}
@@ -536,12 +477,6 @@ Powershell \\
   Ubuntu)
 \cmd{\freebsd}{less /etc/rc.local} (deprecated)
 \cmd{\freebsd}{grep local\_start /etc/defaults/rc.conf}
-\tool{\windows}{Autoruns}
-\click\button{Options}
-\click\button{Filter Options}
-\checkbox{Verify code signatures}
-\checkbox{Hide Microsoft entries}
-
 \end{action}
 
 \begin{action}{Find SETUID and SETGID files and types}
@@ -559,25 +494,13 @@ Powershell \\
   -type d -exec ls -ald \textbackslash\{\textbackslash\} \textbackslash;}
 \end{action}
 
-\begin{action}{Find all unsigned processes}
-\tool{\windows}{ProcessExplorer}
-\button{Options} \click \button{Verify Image Signatures}
-\end{action}
-
-\begin{action} {View Process File Location}
-\tool{\windows}{ProcessExplorer}
-\button{View} \click \button{Select Columns...} \click \button{Image Path}
-\end{action}
-
 \begin{action}{Currently Running Tasks/Processes}
-\cmd{\windows}{tasklist -svc}
 \cmd{\linux\unix}{ps aux | less}
 \cmd{\linux\unix}{top}
 \cmd{\linux\unix}{ps -u \emph{user}}
 \end{action}
 
 \begin{action}{Kill Tasks/Processes}
-\cmd{\windows}{taskkill -pid \emph{pid}}
 \cmd{\linux\unix}{kill \emph{pid}}
 \end{action}
 
@@ -585,9 +508,6 @@ Powershell \\
 
 \begin{action}{Display listening TCP/UDP ports}
 \cmd{\linux\unix}{netstat -plunt}
-\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING} \emph{(PowerShell Only)}
-\cmd{\windows}{netstat -aon | findstr LISTENING} \emph{(cmd.exe)}
-\tool{\windows}{tcpview}
 \cmd{\bsd}{netstat -p tcp -an | egrep 'Proto|LISTEN|udp'}
 \cmd{\unix}{lsof -nPi | awk '/LISTEN/'}
 \cmd{\freebsd}{sockstat -4 -l}
@@ -604,7 +524,52 @@ Powershell \\
 \cmd{\unix}{fuser -k -c /mnt/secret}
 \end{action}
 
+\section*{DATABASES}
+
+\newcommand{\mysql}{\app{mysql}}
+\newcommand{\postgres}{\app{psql}}
+\newcommand{\mssql}{\app{mssql}}
+
+\begin{action}{Export/Restore}
+\cmd{\unix}{mysqldump -u \emph{username} -p \emph{database\_name} > dump.sql}
+\cmd{\unix}{mysql -u \emph{username} -p \emph{database\_name} < dump.sql}
+\cmd{\unix}{pg\_dump \emph{database\_name} > dump.sql}
+\cmd{\unix}{psql -d \emph{database\_name} -f dump.sql}
+\end{action}
+
+\begin{action}{Change user password}
+\cmd{\mysql}{SET PASSWORD FOR 'root' = PASSWORD('new-pass'); FLUSH PRIVILEGES;}
+\cmd{\postgres}{ALTER USER root WITH PASSWORD 'new-pass';}
+\cmd{\mssql}{ALTER LOGIN user WITH PASSWORD = 'pass'; GO;}
+\end{action}
+
+\begin{action}{Add/Delete user}
+\cmd{\mysql}{CREATE USER 'user'@'localhost' IDENTIFIED BY 'pass';}
+\cmd{\mysql}{DROP USER user;}
+\cmd{\postgres}{CREATE USER user-name WITH PASSWORD 'pass' VALID UNTIL 'Jan 1 2014';}
+\cmd{\postgres}{DROP USER user-name;}
+\end{action}
+
+\begin{action}{Permissions}
+\cmd{\mysql}{GRANT ALL ON db1.* TO 'foo'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{GRANT SELECT ON db2.invoice TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\mysql}{REVOKE ALL ON *.* TO 'bar'@'localhost'; FLUSH PRIVILEGES;}
+\cmd{\postgres}{GRANT ALL PRIVILEGES ON *.* TO user;}
+\cmd{\postgres}{REVOKE ALL PRIVILEGES ON *.* FROM user;}
+\cmd{\mssql}{GRANT ALL PRIVILEGES ON *.* TO windows-db-user [WITH GRANT OPTION]; GO;}
+\cmd{\mssql}{GRANT SELECT ON *.* TO user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE ALL PRIVILGES FROM user; GO;}
+\cmd{\mssql}{USE db-name; REVOKE [GRANT OPTION FOR] ALTER FROM user; GO;}
+\end{action}
+
 \section*{Miscellaneous}
+
+\subsection*{Physical Hardening}
+
+\begin{action}{Check devices}
+\bulletpoint{Hardware keylogger (e.g., USB dongles)}
+\bulletpoint{Rogue WiFi cards}
+\end{action}
 
 \subsection*{Date and Time}
 
@@ -682,6 +647,43 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 
 \begin{action}{Connect to site and validate certificate chain}
     \cmd{\unix}{openssl s\_client -showcerts -connect host:443}
+\end{action}
+
+\begin{action}{Open Network Connections}
+\cmd{\windows}{ncpa.cpl}
+\end{action}
+
+\begin{action}{Open Basic Firewall}
+\cmd{\windows}{firewall.cpl}
+\end{action}
+
+\begin{action}{Open Advanced Firewall}
+\cmd{\windows}{wf.msc}
+\end{action}
+
+\begin{action}{Open Internet Options}
+\cmd{\windows}{inetcpl.cpl}
+\end{action}
+
+\begin{action}{Open Programs \& Features}
+\cmd{\windows}{appwiz.cpl}
+\end{action}
+
+\begin{action}{Open Local User Manager}
+\cmd{\windows}{lusrmgr.msc}
+\end{action}
+
+\begin{action}{Download file from Internet}
+\cmd{\windows}{
+Powershell \\
+\$source = "http:www.download.com/file.txt" \\
+\$destination = "c:\textbackslash temp\textbackslash file.txt" \\
+\$wc = New-Object System.Net.WebClient \\
+\$wc.DownloadFile(\$source, \$destination)}
+\end{action}
+
+\begin{action}{List device drivers and their properties}
+\cmd{\windows}{driverquery (-v)}
 \end{action}
 
 \section*{References}
