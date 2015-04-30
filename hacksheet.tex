@@ -28,7 +28,7 @@
     linkcolor=red,          % color of internal links
     citecolor=cyan,         % color of links to bibliography
     filecolor=magenta,      % color of file links
-    urlcolor=blue           % color of external links
+    urlcolor=blue           % color of external links 
 }
 \setitemize{itemsep=1pt,topsep=0pt,parsep=1pt,leftmargin=10pt}
 %\titleformat{\subsection}{\sc}{}{}{}
@@ -116,11 +116,8 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \end{action}
 
 \begin{action}{Enable DEP}
-\tool{\windows}{ProcessExplorer \click Select Columns \click DEP Status}
+\tool{\windows}{ProcessExplorer \click Select Columns\\ \click DEP Status}
 \tool{\windows}{EMET}
-\cmd{\windows}{\comment{Vista}\\
-               bcdedit /set nx AlwaysOn\\
-               bcdedit /set nx OptOut}
 \end{action}
 
 \subsection*{Firewalls}
@@ -141,11 +138,15 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \end{action}
 
 \begin{action}{Add port opening for specific host}
-\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1}
+\cmd{\windows}{netsh firewall add portopening protocol=TCP port=3389 name=RDP mode=ENABLE scope=CUSTOM addresses=192.168.99.1}
 \end{action}
 
 \begin{action}{Remove port opening}
-\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP}
+\cmd{\windows}{netsh firewall delete portopening protocol =TCP port=3389 name=RDP}
+\end{action}
+
+\begin{action}{Open Port Range}
+\cmd{\windows}{for /l \%x in (1000,1,1100) do netsh firewall add portopening protocol=TCP port=\%x name=HighRange mode=ENABLE}
 \end{action}
 
 \subsubsection{Win Vista and Later}
@@ -157,6 +158,10 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \begin{action}{Close ports (outbound)}
 \cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" protocol=TCP\\
 dir=out remoteport=4099 action=block}
+\end{action}
+
+\begin{action}{Block Port Range (inbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="BlockHigh" protocol=TCP dir=in port=10-100 action=block}
 \end{action}
 
 \begin{action}{Open ports (inbound)}
