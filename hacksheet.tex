@@ -123,6 +123,68 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
                bcdedit /set nx OptOut}
 \end{action}
 
+\subsection*{Firewalls}
+
+\subsubsection{General}
+
+\begin{action}{Show firewall rules}
+\cmd{\windows}{netsh firewall show portopening}
+\cmd{\windows}{netsh firewall show allowedprogram}
+\cmd{\windows}{netsh firewall show config}
+\cmd{\windows}{netsh firewall show state}
+\end{action}
+
+\subsubsection{Win 2003 and Earlier}
+
+\begin{action}{Enable Windows firewall in block mode}
+    \cmd{\windows}{netsh firewall set opmode mode = enable}
+\end{action}
+
+\begin{action}{Add port opening for specific host}
+\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1}
+\end{action}
+
+\begin{action}{Remove port opening}
+\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP}
+\end{action}
+
+\subsubsection{Win Vista and Later}
+\begin{action}{Enable Windows firewall in block mode}
+    \cmd{\windows}{netsh advfirewall set allprofiles state on}
+    \cmd{\windows}{netsh advfirewall set allprofiles firewallpolicy "blockinboundalways,allowoutbound"}
+\end{action}
+
+\begin{action}{Close ports (outbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" protocol=TCP\\
+dir=out remoteport=4099 action=block}
+\end{action}
+
+\begin{action}{Open ports (inbound)}
+\cmd{\windows}{netsh advfirewall firewall add rule name="Allow HTTP" protocol=TCP\\
+dir=in localport=80 action=allow}
+\end{action}
+
+\subsection*{Network}
+
+\begin{action}{Display listening TCP/UDP ports}
+\cmd{\windows}{netstat -abon | select-string -Context 1 LISTENING} \emph{(PowerShell Only)}
+\cmd{\windows}{netstat -aon | findstr LISTENING} \emph{(cmd.exe)}
+\tool{\windows}{tcpview}
+\end{action}
+
+\begin{action}{List all computers in network}
+\cmd{\windows}{net view}
+\end{action}
+
+\begin{action} {Shut down SMB vulnerable services}
+\tool{\windows}{Seconfig XP}
+\checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
+\checkbox{Disable SMB over TCP/IP}
+\checkbox{Disable RPC over TCP/IP}
+\click \button{Apply}
+\click \button{ Yes}
+\end{action}
+
 \subsection*{User Management}
 
 \begin{action}{Inspect logged in and past users}
@@ -185,61 +247,6 @@ License: & \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}
 \cmd{\windows}{gpupdate /force}
 \end{action}
 
-
-\subsection*{Network}
-
-\begin{action}{Display listening TCP/UDP ports}
-\cmd{\windows}{netstat -abon | select-string -Context 1, 0 LISTENING} \emph{(PowerShell Only)}
-\cmd{\windows}{netstat -aon | findstr LISTENING} \emph{(cmd.exe)}
-\tool{\windows}{tcpview}
-\end{action}
-
-\begin{action}{Show firewall rules}
-\cmd{\windows}{netsh firewall show portopening}
-\cmd{\windows}{netsh firewall show allowedprogram}
-\cmd{\windows}{netsh firewall show config}
-\cmd{\windows}{netsh firewall show state}
-\end{action}
-
-\begin{action}{Enable Windows firewall in block mode}
-    \cmd{\windows}{netsh firewall set opmode mode = enable} \emph{(Server 2003 and earlier)}
-    \cmd{\windows}{netsh advfirewall set allprofiles state on} \emph{(Vista and later)}
-    \cmd{\windows}{netsh advfirewall set allprofiles firewallpolicy "blockinboundalways,allowoutbound"} \emph{(Vista and later)}
-\end{action}
-
-\begin{action}{Add Windows port opening for specific host}
-\cmd{\windows}{netsh firewall add portopening protocol = TCP port = 3389 name = RDP mode = ENABLE scope = CUSTOM addresses = 192.168.99.1} \emph{(Server 2003 and earlier)}
-\end{action}
-
-\begin{action}{Remove Windows port opening}
-\cmd{\windows}{netsh firewall delete portopening protocol = TCP port = 3389 name = RDP} \emph{(Server 2003 and earlier)}
-\end{action}
-
-\begin{action}{Close ports (outbound)}
-\cmd{\windows}{netsh advfirewall firewall add rule name="BlockAIM" \\
-protocol=TCP\\
-dir=out remoteport=4099 action=block}\emph{(Vista and later)}
-\end{action}
-
-\begin{action}{Open ports (inbound)}
-\cmd{\windows}{netsh advfirewall firewall add rule name="Allow HTTP" \\
-protocol=TCP\\
-dir=in localport=80 action=allow}\emph{(Vista and later)}
-\end{action}
-
-\begin{action}{List all computers in network}
-\cmd{\windows}{net view}
-\end{action}
-
-\begin{action} {Shut down SMB vulnerable services}
-\tool{\windows}{Seconfig XP}
-\checkbox{Disable NetBIOS over TCP/IP (all interfaces)}
-\checkbox{Disable SMB over TCP/IP}
-\checkbox{Disable RPC over TCP/IP}
-\click \button{Apply}
-\click \button{ Yes}
-\end{action}
-
 \section*{Forensics}
 
 \begin{action}{Inspect startup items}
@@ -272,6 +279,55 @@ dir=in localport=80 action=allow}\emph{(Vista and later)}
 \cmd{\windows}{sigverif}
 \tool{\windows}{sigcheck}
 \cmd{\windows}{sigcheck -e -u -s c:{\textbackslash} }
+\end{action}
+
+\section*{Run Commands}
+\begin{action}{Open Network Connections}
+\cmd{\windows}{ncpa.cpl}
+\end{action}
+
+\begin{action}{Open Basic Firewall}
+\cmd{\windows}{firewall.cpl}
+\end{action}
+
+\begin{action}{Open Advanced Firewall}
+\cmd{\windows}{wf.msc}
+\end{action}
+
+\begin{action}{Open Internet Options}
+\cmd{\windows}{inetcpl.cpl}
+\end{action}
+
+\begin{action}{Open Programs \& Features}
+\cmd{\windows}{appwiz.cpl}
+\end{action}
+
+\begin{action}{Open Local User Manager}
+\cmd{\windows}{lusrmgr.msc}
+\end{action}
+
+\begin{action}{Open Control Panel}
+\cmd{\windows}{control}
+\end{action}
+
+\begin{action}{Open Services}
+\cmd{\windows}{services.msc}
+\end{action}
+
+\begin{action}{Open Remote Desktop}
+\cmd{\windows}{mstsc}
+\end{action}
+
+\begin{action}{Open AD Users and Computers}
+\cmd{\windows}{dsa.msc}
+\end{action}
+
+\begin{action}{Open DNS Manager}
+\cmd{\windows}{dnsmgmt.msc}
+\end{action}
+
+\begin{action}{Open Group Policy Editor}
+\cmd{\windows}{gpedit.msc}
 \end{action}
 
 \section*{UNIX}
@@ -652,30 +708,6 @@ nc -l 80 < f | nc 127.0.0.1 6666 > f \&}
 
 \begin{action}{Connect to site and validate certificate chain}
     \cmd{\unix}{openssl s\_client -showcerts -connect host:443}
-\end{action}
-
-\begin{action}{Open Network Connections}
-\cmd{\windows}{ncpa.cpl}
-\end{action}
-
-\begin{action}{Open Basic Firewall}
-\cmd{\windows}{firewall.cpl}
-\end{action}
-
-\begin{action}{Open Advanced Firewall}
-\cmd{\windows}{wf.msc}
-\end{action}
-
-\begin{action}{Open Internet Options}
-\cmd{\windows}{inetcpl.cpl}
-\end{action}
-
-\begin{action}{Open Programs \& Features}
-\cmd{\windows}{appwiz.cpl}
-\end{action}
-
-\begin{action}{Open Local User Manager}
-\cmd{\windows}{lusrmgr.msc}
 \end{action}
 
 \begin{action}{Download file from Internet}
